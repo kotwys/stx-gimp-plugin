@@ -2,12 +2,7 @@
 
 #include <fstream>
 #include "structure.h"
-
-enum class StxError {
-  SUCCESS,
-  EARLY_EOF,
-  GIMP_ERROR
-};
+#include "value.h"
 
 StxError to_image(gint32 &image_id);
 

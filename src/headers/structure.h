@@ -2,6 +2,7 @@
 #include <cstdint>
 
 #define STX_MAGIC_SIZE 3
+#define STX_MAGIC "\x22\x00\x00"
 
 #define STX_E1_BEGIN 225
 #define STX_E1_SIZE 4
