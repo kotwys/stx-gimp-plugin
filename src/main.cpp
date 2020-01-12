@@ -52,16 +52,22 @@ static void query() {
 
 GimpPDBStatusType load_stx(const char *filename, gint32 &image_id) {
   stxread reader(filename);
-  if (!reader.good())
+  if (!reader.good()) {
+    g_message("Initializing error.\n");
     return GIMP_PDB_EXECUTION_ERROR;
+  }
 
   StxError err = reader.process();
-  if (err != StxError::SUCCESS)
+  if (err != StxError::SUCCESS) {
+    g_message("Processing error.\n");
     return GIMP_PDB_EXECUTION_ERROR;
+  }
 
   err = reader.to_image(image_id);
-  if (err != StxError::SUCCESS)
+  if (err != StxError::SUCCESS) {
+    g_message("Drawing error.\n");
     return GIMP_PDB_EXECUTION_ERROR;
+  }
 
   return GIMP_PDB_SUCCESS;
 }
