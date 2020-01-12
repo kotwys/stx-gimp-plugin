@@ -17,7 +17,8 @@
 #define STX_NUM_CHANNELS 4
 
 struct Geometry {
+  uint16_t width;
+  uint16_t height;
   uint16_t scale_x;
   uint16_t scale_y;
-  uint16_t side;
 };
