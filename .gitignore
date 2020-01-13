@@ -1,1 +1,4 @@
 /builddir
+
+# Vim files
+*.swp

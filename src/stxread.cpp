@@ -5,6 +5,7 @@
 #include "bytes.h"
 #include "structure.h"
 #include "stxread.h"
+#include "value.h"
 
 using stream = std::ifstream;
 
