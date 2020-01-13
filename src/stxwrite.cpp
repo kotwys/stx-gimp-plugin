@@ -30,6 +30,8 @@ bool stxwrite::good() const {
   return file.good();
 }
 
+#define CONVERT_SCALE(x) 25600 / x
+
 static void build_geometry(
   char *buffer,
   Geometry &geometry,
@@ -38,8 +40,8 @@ static void build_geometry(
   buffer[0] = 0x1a;
   buffer[2] = magical_number;
   buffer[4] = 0x01;
-  write_l16(buffer + 5, geometry.scale_x * 2.56f);
-  write_l16(buffer + 9, geometry.scale_y * 2.56f);
+  write_l16(buffer + 5, CONVERT_SCALE(geometry.scale_x));
+  write_l16(buffer + 9, CONVERT_SCALE(geometry.scale_y));
   buffer[17] = 0x01;
   write_l16(buffer + 18, geometry.width);
   write_l16(buffer + 22, geometry.width * 4);
