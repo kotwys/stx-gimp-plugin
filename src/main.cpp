@@ -37,7 +37,7 @@ static void query() {
 
   gimp_install_procedure(
     LOAD_PROC, "Load STX texture.",
-    "Load images from Winx Club game. Their file suffix is .stx",
+    "Load textures in STX format.",
     "kotwys", "kotwys", "2020",
     "STX",
     "",
