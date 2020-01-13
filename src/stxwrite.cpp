@@ -18,18 +18,6 @@ StxParams default_params() {
   return params;
 }
 
-stxwrite::stxwrite(const char *filename, const StxParams &params)
-  : file(filename, stream::out | stream::binary), params(params) { }
-
-stxwrite::~stxwrite() {
-  if (!file.is_open())
-    file.close();
-}
-
-bool stxwrite::good() const {
-  return file.good();
-}
-
 #define CONVERT_SCALE(x) 25600 / x
 
 static void build_geometry(
@@ -50,7 +38,11 @@ static void build_geometry(
 
 #define STX_E6 "\x04\x00\x00\x00\x06\x00\x00\x00"
 
-StxError stxwrite::write(gint32 drawable_id) {
+StxError write(
+  const StxParams &params,
+  gint32 drawable_id,
+  std::ofstream &file
+) {
   guint16 width = gimp_drawable_width(drawable_id);
   guint16 height = gimp_drawable_height(drawable_id);
 
@@ -107,10 +99,8 @@ StxError stxwrite::write(gint32 drawable_id) {
 
   file.write("\x00\x00", 2);
   
-  if (!good())
+  if (!file.good())
     return StxError::WRITTING_ERROR;
-
-  file.close();
 
   return StxError::SUCCESS;
 }

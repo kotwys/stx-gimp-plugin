@@ -83,11 +83,14 @@ GimpPDBStatusType load_stx(const char *filename, gint32 &image_id) {
   stream file(filename, stream::in | stream::binary);
   if (!file.good()) {
     g_message("Initializing error.\n");
+    file.close();
     return GIMP_PDB_EXECUTION_ERROR;
   }
 
   StxData data;
   StxError err = read(file, data);
+  file.close();
+
   if (err != StxError::SUCCESS) {
     g_message("Processing error.\n");
     return GIMP_PDB_EXECUTION_ERROR;
@@ -108,11 +111,16 @@ GimpPDBStatusType save_stx(
   gint32 drawable_id,
   const StxParams &params
 ) {
-  stxwrite writer(filename, params);
-  if (!writer.good())
-    return GIMP_PDB_EXECUTION_ERROR;
+  using stream = std::ofstream;
 
-  StxError err = writer.write(drawable_id);
+  stream file(filename, stream::out | stream::binary);
+  if (!file.good()) {
+    file.close();
+    return GIMP_PDB_EXECUTION_ERROR;
+  }
+
+  StxError err = write(params, drawable_id, file);
+  file.close();
   if (err != StxError::SUCCESS) {
     return GIMP_PDB_EXECUTION_ERROR;
   }

@@ -75,8 +75,6 @@ StxError read(stream &file, StxData &data) {
   if (!file.good())
     return StxError::EARLY_EOF;
 
-  file.close();
-
   return StxError::SUCCESS;
 }
 
