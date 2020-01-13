@@ -2,6 +2,7 @@
 #include <libgimp/gimp.h>
 #include <libgimp/gimpui.h>
 
+#include "dialog.h"
 #include "stxread.h"
 #include "stxwrite.h"
 #include "value.h"
@@ -149,6 +150,8 @@ static void run(
     StxParams params = default_params();
     
     if (run_mode != GIMP_RUN_NONINTERACTIVE) {
+      gimp_ui_init(DIALOG_ID, FALSE);
+
       static auto capabilities
         = GIMP_EXPORT_CAN_HANDLE_RGB
         | GIMP_EXPORT_CAN_HANDLE_ALPHA;
@@ -163,7 +166,11 @@ static void run(
         return;
       }
 
-      // gimp_get_data(SAVE_PROC, &params);
+      gimp_get_data(SAVE_PROC, &params);
+      if (run_mode == GIMP_RUN_INTERACTIVE) {
+        if (!save_dialog(params))
+          status = GIMP_PDB_CANCEL;
+      }
     } else {
       if (nparams != 9) {
         status = GIMP_PDB_CALLING_ERROR;
