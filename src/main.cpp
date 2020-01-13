@@ -1,4 +1,5 @@
 #include <cstring>
+#include <fstream>
 #include <libgimp/gimp.h>
 #include <libgimp/gimpui.h>
 
@@ -77,22 +78,27 @@ static void query() {
 }
 
 GimpPDBStatusType load_stx(const char *filename, gint32 &image_id) {
-  stxread reader(filename);
-  if (!reader.good()) {
+  using stream = std::ifstream;
+
+  stream file(filename, stream::in | stream::binary);
+  if (!file.good()) {
     g_message("Initializing error.\n");
     return GIMP_PDB_EXECUTION_ERROR;
   }
 
-  StxError err = reader.process();
+  StxData data;
+  StxError err = read(file, data);
   if (err != StxError::SUCCESS) {
     g_message("Processing error.\n");
     return GIMP_PDB_EXECUTION_ERROR;
   }
 
-  err = reader.to_image(image_id);
+  err = to_image(data, image_id);
   if (err != StxError::SUCCESS) {
     return GIMP_PDB_EXECUTION_ERROR;
   }
+
+  gimp_image_set_filename(image_id, filename);
 
   return GIMP_PDB_SUCCESS;
 }
