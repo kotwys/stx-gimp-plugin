@@ -1,4 +1,9 @@
+# Meson
 /builddir
+
+# Buck
+/buck-out
+/.buckd
 
 # Vim files
 *.swp

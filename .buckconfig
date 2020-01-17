@@ -1,0 +1,5 @@
+[project]
+ignore = .git, .buckd
+
+[parser]
+default_build_file_syntax = SKYLARK
