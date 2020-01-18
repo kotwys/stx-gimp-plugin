@@ -9,8 +9,8 @@ in Winx Club™ PC game (2006).
 
 ## BUILDING
 
-The plugin is built with [https://buck.build](Buck).
-[https://buckaroo.pm](Buckaroo) is used as a package manager. You also need to
+The plugin is built with [Buck](https://buck.build).
+[Buckaroo](https://buckaroo.pm) is used as a package manager. You also need to
 install system's `libgimp`. The other dependencies should be installed
 along with it. Your pkg-config then must include:
 
