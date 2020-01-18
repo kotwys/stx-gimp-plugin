@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <fstream>
 #include <sstream>
 #include <libgimp/gimp.h>
@@ -20,7 +21,12 @@ static StxError parse_geometry(const char *buffer, Geometry &geom) {
 StxResult<StxData> read(stream &file) {
   using Result = StxResult<StxData>;
 
-  file.seekg(STX_MAGIC_SIZE);
+  char magic[STX_MAGIC_SIZE];
+  file.read(magic, STX_MAGIC_SIZE);
+  // Check signature
+  if (!std::equal(magic, magic + STX_MAGIC_SIZE - 1, STX_MAGIC))
+    return ERR(StxError::WRONG_TYPE);
+
   if (!file.good())
     return ERR(StxError::EARLY_EOF);
 
