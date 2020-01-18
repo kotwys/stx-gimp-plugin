@@ -1,3 +1,4 @@
+load('//:buckaroo_macros.bzl', 'buckaroo_deps')
 load('//:subdir_glob.bzl', 'subdir_glob')
 
 cxx_binary(
@@ -19,5 +20,5 @@ cxx_binary(
   deps = [
     '//external/gimp-2.0:gimp-2.0',
     '//external/gimpui-2.0:gimpui-2.0'
-  ]
+  ] + buckaroo_deps()
 )

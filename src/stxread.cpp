@@ -17,15 +17,19 @@ static StxError parse_geometry(const char *buffer, Geometry &geom) {
   return StxError::SUCCESS;
 }
 
-StxError read(stream &file, StxData &data) {
+StxResult<StxData> read_either(stream &file) {
+  using Result = StxResult<StxData>;
+
   file.seekg(STX_MAGIC_SIZE);
   if (!file.good())
-    return StxError::EARLY_EOF;
+    return ERR(StxError::EARLY_EOF);
+
+  StxData data;
 
   while (1) {
     auto opener = file.get();
     if (!file.good())
-      return StxError::EARLY_EOF;
+      return ERR(StxError::EARLY_EOF);
 
     // TODO: Parse other sections
     if (opener == STX_E6_BEGIN) {
@@ -37,13 +41,13 @@ StxError read(stream &file, StxData &data) {
       file.read(buffer, STX_GEOM_SIZE);
       if (!file.good()) {
         delete[] buffer;
-        return StxError::EARLY_EOF;
+        return ERR(StxError::EARLY_EOF);
       }
 
       StxError err = parse_geometry(buffer, data.geometry);
       delete[] buffer;
       if (err != StxError::SUCCESS) {
-        return err;
+        return ERR(err);
       }
     } else if (opener == STX_DELIMITER) {
       break;
@@ -52,7 +56,7 @@ StxError read(stream &file, StxData &data) {
 
   file.seekg(1, stream::cur);
   if (!file.good())
-    return StxError::EARLY_EOF;
+    return ERR(StxError::EARLY_EOF);
 
   size_t pixels = data.geometry.width * data.geometry.height;
   data.image_data = new guchar[pixels * STX_NUM_CHANNELS];
@@ -62,7 +66,7 @@ StxError read(stream &file, StxData &data) {
     size_t pos = i * STX_NUM_CHANNELS;
     file.read(buffer, STX_NUM_CHANNELS);
     if (!file.good()) {
-      return StxError::EARLY_EOF;
+      return ERR(StxError::EARLY_EOF);
     }
 
     // RGBA <- BGRA
@@ -73,13 +77,19 @@ StxError read(stream &file, StxData &data) {
   }
 
   if (!file.good())
-    return StxError::EARLY_EOF;
+    return ERR(StxError::EARLY_EOF);
 
-  return StxError::SUCCESS;
+  return OK(data);
 }
 
-StxError to_image(const StxData &data, gint32 &image_id) {
-  image_id = gimp_image_new(
+StxError read(stream &file, StxData &data) {
+  UNWRAP_TO(read_either(file), data)
+}
+
+StxResult<gint32> to_image_either(const StxData &data) {
+  using Result = StxResult<gint32>;
+
+  gint32 image_id = gimp_image_new(
     data.geometry.width,
     data.geometry.height,
     GIMP_RGB
@@ -98,7 +108,7 @@ StxError to_image(const StxData &data, gint32 &image_id) {
   
   if (!success) {
     gimp_image_delete(image_id);
-    return StxError::GIMP_ERROR;
+    return ERR(StxError::GIMP_ERROR);
   }
 
   GimpDrawable *drawable = gimp_drawable_get(layer_id);
@@ -128,5 +138,9 @@ StxError to_image(const StxData &data, gint32 &image_id) {
 
   gimp_drawable_detach(drawable);
 
-  return StxError::SUCCESS;
+  return OK(image_id);
+}
+
+StxError to_image(const StxData &data, gint32 &image_id) {
+  UNWRAP_TO(to_image_either(data), image_id)
 }

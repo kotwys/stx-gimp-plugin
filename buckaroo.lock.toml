@@ -1,0 +1,13 @@
+manifest = "3d8a2804085b949d5fc48a9a6dc7b1fa6197e13ce5fa1f7c9a89289054bd4a29"
+
+[[dependency]]
+package = "github.com/loopperfect/neither"
+target = "//:neither"
+
+[lock."github.com/loopperfect/neither"]
+versions = [ "branch=master" ]
+revision = "d2db83d37e4ac84e50c51928bac4504b982983f0"
+
+[lock."github.com/loopperfect/neither".lock."github.com/buckaroo-pm/google-googletest"]
+versions = [ "branch=master" ]
+revision = "cb8d2c1a2fcd344953e6c129a1a699a2c230551d"

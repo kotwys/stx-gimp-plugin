@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <variant>
 #include <glib.h>
 #include <libgimp/gimp.h>
 
@@ -38,11 +39,13 @@ static void build_geometry(
 
 #define STX_E6 "\x04\x00\x00\x00\x06\x00\x00\x00"
 
-StxError write(
+StxResult<std::monostate> write_either(
   const StxParams &params,
   gint32 drawable_id,
   std::ofstream &file
 ) {
+  using Result = StxResult<std::monostate>;
+
   guint16 width = gimp_drawable_width(drawable_id);
   guint16 height = gimp_drawable_height(drawable_id);
 
@@ -100,7 +103,20 @@ StxError write(
   file.write("\x00\x00", 2);
   
   if (!file.good())
-    return StxError::WRITTING_ERROR;
+    return ERR(StxError::WRITTING_ERROR);
+
+  std::monostate unit;
+  return OK(unit);
+}
+
+StxError write(
+  const StxParams &params,
+  gint32 drawable_id,
+  std::ofstream &file
+) {
+  auto result = write_either(params, drawable_id, file);
+  if (result.isLeft)
+    return result.leftValue;
 
   return StxError::SUCCESS;
 }
