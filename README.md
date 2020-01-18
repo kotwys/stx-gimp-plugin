@@ -9,10 +9,10 @@ in Winx Club™ PC game (2006).
 
 ## BUILDING
 
-The plugin is built with Meson. You also need to install `libgimp`. The other
-dependencies should be installed along with it. Your pkg-config then
-must include:
+The plugin is built with [https://buck.build](Buck).
+[https://buckaroo.pm](Buckaroo) is used as a package manager. You also need to
+install system's `libgimp`. The other dependencies should be installed
+along with it. Your pkg-config then must include:
 
 + `gimp-2.0`
 + `gimpui-2.0`
-+ `glib-2.0`
