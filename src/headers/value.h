@@ -3,6 +3,7 @@
 
 enum class StxError {
   SUCCESS,
+  OPEN_FAILED,
   EARLY_EOF,
   GIMP_ERROR,
   WRITTING_ERROR

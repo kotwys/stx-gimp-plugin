@@ -1,5 +1,6 @@
 #include <cstring>
 #include <fstream>
+#include <variant>
 #include <libgimp/gimp.h>
 #include <libgimp/gimpui.h>
 
@@ -77,36 +78,28 @@ static void query() {
   gimp_register_save_handler(SAVE_PROC, "stx", "");
 }
 
-GimpPDBStatusType load_stx(const char *filename, gint32 &image_id) {
+StxResult<gint32> load_stx(const char *filename) {
   using stream = std::ifstream;
 
   stream file(filename, stream::in | stream::binary);
   if (!file.good()) {
-    g_message("Initializing error.\n");
     file.close();
-    return GIMP_PDB_EXECUTION_ERROR;
+    return StxResult<gint32>::leftOf(StxError::OPEN_FAILED);
   }
 
-  StxData data;
-  StxError err = read(file, data);
+  auto result = read_either(file)
+    .rightFlatMap(to_image_either)
+    .rightMap([filename](const gint32 image_id) {
+      gimp_image_set_filename(image_id, filename);
+      return image_id;
+    });
+
   file.close();
 
-  if (err != StxError::SUCCESS) {
-    g_message("Processing error.\n");
-    return GIMP_PDB_EXECUTION_ERROR;
-  }
-
-  err = to_image(data, image_id);
-  if (err != StxError::SUCCESS) {
-    return GIMP_PDB_EXECUTION_ERROR;
-  }
-
-  gimp_image_set_filename(image_id, filename);
-
-  return GIMP_PDB_SUCCESS;
+  return result;
 }
 
-GimpPDBStatusType save_stx(
+StxResult<std::monostate> save_stx(
   const char* filename,
   gint32 drawable_id,
   const StxParams &params
@@ -116,16 +109,13 @@ GimpPDBStatusType save_stx(
   stream file(filename, stream::out | stream::binary);
   if (!file.good()) {
     file.close();
-    return GIMP_PDB_EXECUTION_ERROR;
+    return StxResult<std::monostate>::leftOf(StxError::OPEN_FAILED);
   }
 
-  StxError err = write(params, drawable_id, file);
+  auto result = write_either(params, drawable_id, file);
   file.close();
-  if (err != StxError::SUCCESS) {
-    return GIMP_PDB_EXECUTION_ERROR;
-  }
 
-  return GIMP_PDB_SUCCESS;
+  return result;
 }
 
 static void run(
@@ -147,13 +137,16 @@ static void run(
       status = GIMP_PDB_CALLING_ERROR;
     } else {
       const char *filename = param[1].data.d_string;
-      gint32 image_id;
-      status = load_stx(filename, image_id);
-      
-      if (status == GIMP_PDB_SUCCESS) {
+      auto result = load_stx(filename);
+
+      if (result.isLeft) {
+        status = GIMP_PDB_CALLING_ERROR;
+      } else {
+        status = GIMP_PDB_SUCCESS;
+        
         *nreturn_vals = 2;
         values[1].type = GIMP_PDB_IMAGE;
-        values[1].data.d_image = image_id;
+        values[1].data.d_image = result.rightValue;
       }
     }
   } else if (strcmp(name, SAVE_PROC) == 0) {
@@ -197,11 +190,13 @@ static void run(
     }
 
     if (status == GIMP_PDB_SUCCESS) {
-      status = save_stx(
+      auto result = save_stx(
         param[3].data.d_string,
         drawable_id, params
       );
-      if (status == GIMP_PDB_SUCCESS) {
+      if (result.isLeft) {
+        status = GIMP_PDB_EXECUTION_ERROR;
+      } else {
         gimp_set_data(SAVE_PROC, &params, sizeof(params));
       }
     }
