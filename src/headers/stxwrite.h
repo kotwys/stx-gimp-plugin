@@ -1,4 +1,5 @@
 #pragma once
+#include <variant>
 #include <glib.h>
 #include <fstream>
 #include "value.h"
@@ -10,17 +11,10 @@ struct StxParams {
   guint8 magical_number;
 };
 
-class stxwrite {
-private:
-  std::ofstream file;
-  const StxParams &params;
-
-public:
-  stxwrite(const char *filename, const StxParams &params);
-  ~stxwrite();
-
-  bool good() const;
-  StxError write(gint32 drawable_id);
-};
-
 StxParams default_params();
+
+StxResult<std::monostate> write(
+  const StxParams &params,
+  gint32 drawable_id,
+  std::ofstream &file
+);

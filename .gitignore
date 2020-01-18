@@ -1,4 +1,15 @@
+# Meson
 /builddir
+
+# Buck
+/buck-out
+/.buckd
+.buckconfig.d
+.buckconfig.local
+
+# Buckaroo
+buckaroo
+buckaroo_macros.bzl
 
 # Vim files
 *.swp
