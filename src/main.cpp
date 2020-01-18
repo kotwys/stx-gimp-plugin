@@ -87,8 +87,8 @@ StxResult<gint32> load_stx(const char *filename) {
     return StxResult<gint32>::leftOf(StxError::OPEN_FAILED);
   }
 
-  auto result = read_either(file)
-    .rightFlatMap(to_image_either)
+  auto result = read(file)
+    .rightFlatMap(to_image)
     .rightMap([filename](const gint32 image_id) {
       gimp_image_set_filename(image_id, filename);
       return image_id;
@@ -112,7 +112,7 @@ StxResult<std::monostate> save_stx(
     return StxResult<std::monostate>::leftOf(StxError::OPEN_FAILED);
   }
 
-  auto result = write_either(params, drawable_id, file);
+  auto result = write(params, drawable_id, file);
   file.close();
 
   return result;

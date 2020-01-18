@@ -39,7 +39,7 @@ static void build_geometry(
 
 #define STX_E6 "\x04\x00\x00\x00\x06\x00\x00\x00"
 
-StxResult<std::monostate> write_either(
+StxResult<std::monostate> write(
   const StxParams &params,
   gint32 drawable_id,
   std::ofstream &file
@@ -107,16 +107,4 @@ StxResult<std::monostate> write_either(
 
   std::monostate unit;
   return OK(unit);
-}
-
-StxError write(
-  const StxParams &params,
-  gint32 drawable_id,
-  std::ofstream &file
-) {
-  auto result = write_either(params, drawable_id, file);
-  if (result.isLeft)
-    return result.leftValue;
-
-  return StxError::SUCCESS;
 }

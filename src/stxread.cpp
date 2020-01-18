@@ -17,7 +17,7 @@ static StxError parse_geometry(const char *buffer, Geometry &geom) {
   return StxError::SUCCESS;
 }
 
-StxResult<StxData> read_either(stream &file) {
+StxResult<StxData> read(stream &file) {
   using Result = StxResult<StxData>;
 
   file.seekg(STX_MAGIC_SIZE);
@@ -82,11 +82,7 @@ StxResult<StxData> read_either(stream &file) {
   return OK(data);
 }
 
-StxError read(stream &file, StxData &data) {
-  UNWRAP_TO(read_either(file), data)
-}
-
-StxResult<gint32> to_image_either(const StxData &data) {
+StxResult<gint32> to_image(const StxData &data) {
   using Result = StxResult<gint32>;
 
   gint32 image_id = gimp_image_new(
@@ -139,8 +135,4 @@ StxResult<gint32> to_image_either(const StxData &data) {
   gimp_drawable_detach(drawable);
 
   return OK(image_id);
-}
-
-StxError to_image(const StxData &data, gint32 &image_id) {
-  UNWRAP_TO(to_image_either(data), image_id)
 }

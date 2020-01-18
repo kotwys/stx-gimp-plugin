@@ -13,13 +13,7 @@ struct StxParams {
 
 StxParams default_params();
 
-StxResult<std::monostate> write_either(
-  const StxParams &params,
-  gint32 drawable_id,
-  std::ofstream &file
-);
-[[deprecated("Replaced by write_either")]]
-StxError write(
+StxResult<std::monostate> write(
   const StxParams &params,
   gint32 drawable_id,
   std::ofstream &file
