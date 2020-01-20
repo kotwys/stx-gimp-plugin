@@ -1,7 +1,7 @@
 #pragma once
 #include <variant>
 #include <glib.h>
-#include <fstream>
+#include <iostream>
 
 #include "image.h"
 #include "value.h"
@@ -17,10 +17,10 @@ StxParams default_params();
 
 StxResult<std::monostate> write(
   const StxImage &img,
-  std::ofstream &file
+  std::ostream &file
 );
 StxResult<std::monostate> write(
   const StxParams &params,
   gint32 drawable_id,
-  std::ofstream &file
+  std::ostream &file
 );

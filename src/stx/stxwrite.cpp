@@ -44,7 +44,7 @@ static void build_geometry(
 
 StxResult<std::monostate> write(
   const StxImage &img,
-  std::ofstream &file
+  std::ostream &file
 ) {
   using Result = StxResult<std::monostate>;
 
@@ -86,7 +86,7 @@ StxResult<std::monostate> write(
 StxResult<std::monostate> write(
   const StxParams &params,
   gint32 drawable_id,
-  std::ofstream &file
+  std::ostream &file
 ) {
   using Result = StxResult<std::monostate>;
 

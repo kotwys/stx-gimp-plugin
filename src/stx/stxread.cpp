@@ -8,7 +8,7 @@
 #include "stxread.h"
 #include "value.h"
 
-using stream = std::ifstream;
+using stream = std::istream;
 
 static StxError parse_geometry(const char *buffer, Geometry &geom) {
   geom.scale_x = read_l16(buffer + 5);
