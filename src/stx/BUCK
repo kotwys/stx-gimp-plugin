@@ -1,0 +1,19 @@
+load('//:buckaroo_macros.bzl', 'buckaroo_deps')
+load('//:subdir_glob.bzl', 'subdir_glob')
+
+cxx_library(
+  name = 'stx',
+  srcs = [
+    'stxread.cpp',
+    'stxwrite.cpp',
+    'bytes.cpp'
+  ],
+  header_namespace = '',
+  exported_headers = subdir_glob([
+    ('headers', '**/*.h')
+  ]),
+  deps = [
+    '//external/gimp-2.0:gimp-2.0'
+  ] + buckaroo_deps(),
+  visibility = ['PUBLIC']
+)
