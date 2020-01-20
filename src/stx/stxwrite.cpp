@@ -1,13 +1,9 @@
 #include <algorithm>
-#include <variant>
-#include <glib.h>
 #include <libgimp/gimp.h>
 
 #include "bytes.h"
 #include "structure.h"
-#include "image.h"
 #include "stxwrite.h"
-#include "value.h"
 
 using stream = std::ofstream;
 

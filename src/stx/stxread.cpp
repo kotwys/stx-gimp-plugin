@@ -1,12 +1,10 @@
 #include <algorithm>
-#include <fstream>
 #include <sstream>
 #include <libgimp/gimp.h>
 
 #include "bytes.h"
 #include "structure.h"
 #include "stxread.h"
-#include "value.h"
 
 using stream = std::istream;
 
