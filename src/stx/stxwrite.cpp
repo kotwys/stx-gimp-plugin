@@ -5,6 +5,7 @@
 
 #include "bytes.h"
 #include "structure.h"
+#include "image.h"
 #include "stxwrite.h"
 #include "value.h"
 
@@ -23,7 +24,7 @@ StxParams default_params() {
 
 static void build_geometry(
   char *buffer,
-  Geometry &geometry,
+  const Geometry &geometry,
   guint8 magical_number
 ) {
   buffer[0] = 0x1a;
@@ -39,66 +40,39 @@ static void build_geometry(
 
 #define STX_E6 "\x04\x00\x00\x00\x06\x00\x00\x00"
 
+#define DEFAULT_NUMBER '\x04'
+
 StxResult<std::monostate> write(
-  const StxParams &params,
-  gint32 drawable_id,
+  const StxImage &img,
   std::ofstream &file
 ) {
   using Result = StxResult<std::monostate>;
 
-  guint16 width = gimp_drawable_width(drawable_id);
-  guint16 height = gimp_drawable_height(drawable_id);
-
   file.write(STX_MAGIC, STX_MAGIC_SIZE);
 
+  /*
   if (params.e6_write)
     file.put(STX_E6_BEGIN)
       .write(STX_E6, STX_E6_SIZE);
+  */
 
   file.put(STX_E1_BEGIN);
   file.write("\x20\x00", 2)
-    .put(params.magical_number)
+    .put(DEFAULT_NUMBER)
     .put('\x00');
 
   file.put(STX_GEOM_BEGIN);
   char geom_buffer[STX_GEOM_SIZE] = {0};
 
-  Geometry geometry {
-    width,
-    height,
-    params.scale_x,
-    params.scale_y
-  };
-
-  build_geometry(geom_buffer, geometry, params.magical_number);
+  build_geometry(geom_buffer, img.geometry, DEFAULT_NUMBER);
   file.write(geom_buffer, STX_GEOM_SIZE);
 
   file.write("\x00\x00", 2);
 
-  const bool has_alpha = gimp_drawable_has_alpha(drawable_id);
-  const size_t offset = has_alpha ? 4 : 3;
+  size_t bytes = img.geometry.width * img.geometry.height * STX_NUM_CHANNELS;
+  file.write(img.image_data, bytes);
 
-  GimpPixelRgn rgn_in;
-  GimpDrawable *drawable = gimp_drawable_get(drawable_id);
-
-  gimp_pixel_rgn_init(&rgn_in, drawable, 0, 0, width, height, FALSE, FALSE);
-  size_t bytes = width * height * STX_NUM_CHANNELS;
-  guchar* data = new guchar[width * height * STX_NUM_CHANNELS];
-  gimp_pixel_rgn_get_rect(&rgn_in, data, 0, 0, width, height);
-  gimp_drawable_detach(drawable);
-
-  for (size_t i = 0; i < bytes; i += offset) {
-    char buffer[4];
-    // RGBA -> BGRA
-    buffer[0] = data[i + 2];
-    buffer[1] = data[i + 1];
-    buffer[2] = data[i];
-    buffer[3] = has_alpha ? data[i + 3] : 0xff;
-
-    file.write(buffer, 4);
-  }
-
-  delete[] data;
+  delete[] img.image_data;
 
   file.write("\x00\x00", 2);
   
@@ -107,4 +81,52 @@ StxResult<std::monostate> write(
 
   std::monostate unit;
   return OK(unit);
+}
+
+StxResult<std::monostate> write(
+  const StxParams &params,
+  gint32 drawable_id,
+  std::ofstream &file
+) {
+  using Result = StxResult<std::monostate>;
+
+  StxImage img;
+
+  guint16 width = gimp_drawable_width(drawable_id);
+  guint16 height = gimp_drawable_height(drawable_id);
+
+  img.geometry = {
+    width,
+    height,
+    params.scale_x,
+    params.scale_y
+  };
+
+  const bool has_alpha = gimp_drawable_has_alpha(drawable_id);
+  const size_t offset = has_alpha ? 4 : 3;
+
+  GimpPixelRgn rgn_in;
+  GimpDrawable *drawable = gimp_drawable_get(drawable_id);
+
+  gimp_pixel_rgn_init(&rgn_in, drawable, 0, 0, width, height, FALSE, FALSE);
+  size_t pixels = width * height;
+  guchar* data = new guchar[pixels * offset];
+  gimp_pixel_rgn_get_rect(&rgn_in, data, 0, 0, width, height);
+  gimp_drawable_detach(drawable);
+
+  img.image_data = new guchar[pixels * STX_NUM_CHANNELS];
+
+  for (size_t i = 0; i < pixels; i++) {
+    size_t src_pos = i * offset;
+    size_t dst_pos = i * STX_NUM_CHANNELS;
+    // RGBA -> BGRA
+    img.image_data[dst_pos] = data[src_pos + 2];
+    img.image_data[dst_pos + 1] = data[src_pos + 1];
+    img.image_data[dst_pos + 2] = data[src_pos];
+    img.image_data[dst_pos + 3] = has_alpha ? data[src_pos + 3] : 0xff;
+  }
+
+  delete[] data;
+
+  return write(img, file);
 }

@@ -3,6 +3,9 @@ load('//:subdir_glob.bzl', 'subdir_glob')
 
 cxx_library(
   name = 'stx',
+  compiler_flags = [
+    '-fpermissive'
+  ],
   srcs = [
     'stxread.cpp',
     'stxwrite.cpp',

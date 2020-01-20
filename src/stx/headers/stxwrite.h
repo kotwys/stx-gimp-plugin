@@ -2,6 +2,8 @@
 #include <variant>
 #include <glib.h>
 #include <fstream>
+
+#include "image.h"
 #include "value.h"
 
 struct StxParams {
@@ -13,6 +15,10 @@ struct StxParams {
 
 StxParams default_params();
 
+StxResult<std::monostate> write(
+  const StxImage &img,
+  std::ofstream &file
+);
 StxResult<std::monostate> write(
   const StxParams &params,
   gint32 drawable_id,

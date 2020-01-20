@@ -18,8 +18,8 @@ static StxError parse_geometry(const char *buffer, Geometry &geom) {
   return StxError::SUCCESS;
 }
 
-StxResult<StxData> read(stream &file) {
-  using Result = StxResult<StxData>;
+StxResult<StxImage> read(stream &file) {
+  using Result = StxResult<StxImage>;
 
   char magic[STX_MAGIC_SIZE];
   file.read(magic, STX_MAGIC_SIZE);
@@ -30,7 +30,7 @@ StxResult<StxData> read(stream &file) {
   if (!file.good())
     return ERR(StxError::EARLY_EOF);
 
-  StxData data;
+  StxImage data;
 
   while (1) {
     auto opener = file.get();
@@ -88,7 +88,7 @@ StxResult<StxData> read(stream &file) {
   return OK(data);
 }
 
-StxResult<gint32> to_image(const StxData &data) {
+StxResult<gint32> to_image(const StxImage &data) {
   using Result = StxResult<gint32>;
 
   gint32 image_id = gimp_image_new(

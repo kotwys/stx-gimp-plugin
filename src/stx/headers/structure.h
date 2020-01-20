@@ -1,5 +1,4 @@
 #pragma once
-#include <cstdint>
 
 #define STX_MAGIC_SIZE 3
 #define STX_MAGIC "\x22\x00\x00"
@@ -16,10 +15,3 @@
 #define STX_DELIMITER 0
 
 #define STX_NUM_CHANNELS 4
-
-struct Geometry {
-  uint16_t width;
-  uint16_t height;
-  uint16_t scale_x;
-  uint16_t scale_y;
-};
