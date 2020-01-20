@@ -5,9 +5,10 @@
 #include <libgimp/gimpui.h>
 
 #include "dialog.h"
+#include "gimp_interop.h"
+#include "saving.h"
 #include "stxread.h"
 #include "stxwrite.h"
-#include "value.h"
 
 #define LOAD_PROC "file_stx_load"
 #define SAVE_PROC "file_stx_save"
@@ -87,8 +88,8 @@ StxResult<gint32> load_stx(const char *filename) {
     return StxResult<gint32>::leftOf(StxError::OPEN_FAILED);
   }
 
-  auto result = read(file)
-    .rightFlatMap(to_image)
+  auto result = stx::read(file)
+    .rightFlatMap(to_gimp)
     .rightMap([filename](const gint32 image_id) {
       gimp_image_set_filename(image_id, filename);
       return image_id;
@@ -112,7 +113,11 @@ StxResult<std::monostate> save_stx(
     return StxResult<std::monostate>::leftOf(StxError::OPEN_FAILED);
   }
 
-  auto result = write(params, drawable_id, file);
+  auto result = from_gimp(params, drawable_id)
+    .rightFlatMap([&file](const StxImage &img) {
+      return stx::write(img, file);
+    });
+
   file.close();
 
   return result;

@@ -12,7 +12,9 @@ cxx_binary(
   header_namespace = '',
   srcs = [
     'src/main.cpp',
-    'src/dialog.cpp'
+    'src/dialog.cpp',
+    'src/saving.cpp',
+    'src/gimp_interop.cpp'
   ],
   deps = [
     '//src/stx:stx',

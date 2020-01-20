@@ -2,7 +2,6 @@
 #include <libgimp/gimpui.h>
 
 #include "dialog.h"
-#include "stxwrite.h"
 
 static GtkWidget *number_field(
   const char* label_text,
