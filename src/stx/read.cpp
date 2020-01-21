@@ -2,38 +2,38 @@
 #include <sstream>
 #include <libgimp/gimp.h>
 
-#include "bytes.h"
-#include "structure.h"
-#include "stxread.h"
+#include "stx/bytes.h"
+#include "stx/structure.h"
+#include "stx/read.h"
 
 using stream = std::istream;
 
-static StxError parse_geometry(const char *buffer, Geometry &geom) {
+static stx::Error parse_geometry(const char *buffer, stx::Geometry &geom) {
   geom.scale_x = read_l16(buffer + 5);
   geom.scale_y = read_l16(buffer + 9);
   geom.width = read_l16(buffer + 18);
   geom.height = read_l16(buffer + 26);
-  return StxError::SUCCESS;
+  return stx::Error::SUCCESS;
 }
 
-StxResult<StxImage> stx::read(stream &file) {
-  using Result = StxResult<StxImage>;
+stx::Result<stx::Image> stx::read(stream &file) {
+  using Result = stx::Result<stx::Image>;
 
   char magic[STX_MAGIC_SIZE];
   file.read(magic, STX_MAGIC_SIZE);
   // Check signature
   if (!std::equal(magic, magic + STX_MAGIC_SIZE - 1, STX_MAGIC))
-    return ERR(StxError::WRONG_TYPE);
+    return ERR(stx::Error::WRONG_TYPE);
 
   if (!file.good())
-    return ERR(StxError::EARLY_EOF);
+    return ERR(stx::Error::EARLY_EOF);
 
-  StxImage data;
+  stx::Image data;
 
   while (1) {
     auto opener = file.get();
     if (!file.good())
-      return ERR(StxError::EARLY_EOF);
+      return ERR(stx::Error::EARLY_EOF);
 
     // TODO: Parse other sections
     if (opener == STX_E6_BEGIN) {
@@ -45,12 +45,12 @@ StxResult<StxImage> stx::read(stream &file) {
       file.read(buffer, STX_GEOM_SIZE);
       if (!file.good()) {
         delete[] buffer;
-        return ERR(StxError::EARLY_EOF);
+        return ERR(stx::Error::EARLY_EOF);
       }
 
-      StxError err = parse_geometry(buffer, data.geometry);
+      stx::Error err = parse_geometry(buffer, data.geometry);
       delete[] buffer;
-      if (err != StxError::SUCCESS) {
+      if (err != stx::Error::SUCCESS) {
         return ERR(err);
       }
     } else if (opener == STX_DELIMITER) {
@@ -60,7 +60,7 @@ StxResult<StxImage> stx::read(stream &file) {
 
   file.seekg(1, stream::cur);
   if (!file.good())
-    return ERR(StxError::EARLY_EOF);
+    return ERR(stx::Error::EARLY_EOF);
 
   size_t pixels = data.geometry.width * data.geometry.height;
   data.image_data = new guchar[pixels * STX_NUM_CHANNELS];
@@ -70,7 +70,7 @@ StxResult<StxImage> stx::read(stream &file) {
     size_t pos = i * STX_NUM_CHANNELS;
     file.read(buffer, STX_NUM_CHANNELS);
     if (!file.good()) {
-      return ERR(StxError::EARLY_EOF);
+      return ERR(stx::Error::EARLY_EOF);
     }
 
     // RGBA <- BGRA
@@ -81,7 +81,7 @@ StxResult<StxImage> stx::read(stream &file) {
   }
 
   if (!file.good())
-    return ERR(StxError::EARLY_EOF);
+    return ERR(stx::Error::EARLY_EOF);
 
   return OK(data);
 }

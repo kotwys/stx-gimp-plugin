@@ -1,8 +1,8 @@
 #include "gimp_interop.h"
-#include "structure.h"
+#include "stx/structure.h"
 
-StxResult<gint32> to_gimp(const StxImage &data) {
-  using Result = StxResult<gint32>;
+stx::Result<gint32> to_gimp(const stx::Image &data) {
+  using Result = stx::Result<gint32>;
 
   gint32 image_id = gimp_image_new(
     data.geometry.width,
@@ -22,7 +22,7 @@ StxResult<gint32> to_gimp(const StxImage &data) {
   
   if (!success) {
     gimp_image_delete(image_id);
-    return ERR(StxError::GIMP_ERROR);
+    return ERR(stx::Error::GIMP_ERROR);
   }
 
   GimpDrawable *drawable = gimp_drawable_get(layer_id);
@@ -55,19 +55,18 @@ StxResult<gint32> to_gimp(const StxImage &data) {
   return OK(image_id);
 }
 
-StxResult<StxImage> from_gimp(
+stx::Result<stx::Image> from_gimp(
   const StxParams &params,
   const gint32 drawable_id
 ) {
-  using Result = StxResult<StxImage>;
+  using Result = stx::Result<stx::Image>;
 
-  StxImage img;
+  stx::Image img;
 
   guint16 width = gimp_drawable_width(drawable_id);
   guint16 height = gimp_drawable_height(drawable_id);
 
-  
-  Geometry geometry = {
+  stx::Geometry geometry = {
     width,
     height,
     params.scale_x,

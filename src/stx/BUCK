@@ -7,11 +7,11 @@ cxx_library(
     '-fpermissive'
   ],
   srcs = [
-    'stxread.cpp',
-    'stxwrite.cpp',
+    'read.cpp',
+    'write.cpp',
     'bytes.cpp'
   ],
-  header_namespace = '',
+  header_namespace = 'stx',
   exported_headers = subdir_glob([
     ('headers', '**/*.h')
   ]),

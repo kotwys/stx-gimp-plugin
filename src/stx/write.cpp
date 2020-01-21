@@ -1,9 +1,9 @@
 #include <algorithm>
 #include <libgimp/gimp.h>
 
-#include "bytes.h"
-#include "structure.h"
-#include "stxwrite.h"
+#include "stx/bytes.h"
+#include "stx/structure.h"
+#include "stx/write.h"
 
 using stream = std::ofstream;
 
@@ -11,7 +11,7 @@ using stream = std::ofstream;
 
 static void build_geometry(
   char *buffer,
-  const Geometry &geometry,
+  const stx::Geometry &geometry,
   guint8 magical_number
 ) {
   buffer[0] = 0x1a;
@@ -29,11 +29,11 @@ static void build_geometry(
 
 #define DEFAULT_NUMBER '\x04'
 
-StxResult<std::monostate> stx::write(
-  const StxImage &img,
+stx::Result<std::monostate> stx::write(
+  const stx::Image &img,
   std::ostream &file
 ) {
-  using Result = StxResult<std::monostate>;
+  using Result = stx::Result<std::monostate>;
 
   file.write(STX_MAGIC, STX_MAGIC_SIZE);
 
@@ -64,7 +64,7 @@ StxResult<std::monostate> stx::write(
   file.write("\x00\x00", 2);
   
   if (!file.good())
-    return ERR(StxError::WRITTING_ERROR);
+    return ERR(stx::Error::WRITTING_ERROR);
 
   std::monostate unit;
   return OK(unit);

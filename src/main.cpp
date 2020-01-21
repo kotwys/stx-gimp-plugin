@@ -4,11 +4,11 @@
 #include <libgimp/gimp.h>
 #include <libgimp/gimpui.h>
 
+#include "stx/read.h"
+#include "stx/write.h"
 #include "dialog.h"
 #include "gimp_interop.h"
 #include "saving.h"
-#include "stxread.h"
-#include "stxwrite.h"
 
 #define LOAD_PROC "file_stx_load"
 #define SAVE_PROC "file_stx_save"
@@ -79,13 +79,13 @@ static void query() {
   gimp_register_save_handler(SAVE_PROC, "stx", "");
 }
 
-StxResult<gint32> load_stx(const char *filename) {
+stx::Result<gint32> load_stx(const char *filename) {
   using stream = std::ifstream;
 
   stream file(filename, stream::in | stream::binary);
   if (!file.good()) {
     file.close();
-    return StxResult<gint32>::leftOf(StxError::OPEN_FAILED);
+    return stx::Result<gint32>::leftOf(stx::Error::OPEN_FAILED);
   }
 
   auto result = stx::read(file)
@@ -100,7 +100,7 @@ StxResult<gint32> load_stx(const char *filename) {
   return result;
 }
 
-StxResult<std::monostate> save_stx(
+stx::Result<std::monostate> save_stx(
   const char* filename,
   gint32 drawable_id,
   const StxParams &params
@@ -110,11 +110,11 @@ StxResult<std::monostate> save_stx(
   stream file(filename, stream::out | stream::binary);
   if (!file.good()) {
     file.close();
-    return StxResult<std::monostate>::leftOf(StxError::OPEN_FAILED);
+    return stx::Result<std::monostate>::leftOf(stx::Error::OPEN_FAILED);
   }
 
   auto result = from_gimp(params, drawable_id)
-    .rightFlatMap([&file](const StxImage &img) {
+    .rightFlatMap([&file](const stx::Image &img) {
       return stx::write(img, file);
     });
 

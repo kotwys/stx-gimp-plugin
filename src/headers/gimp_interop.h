@@ -1,12 +1,12 @@
 #pragma once
 
 #include <libgimp/gimp.h>
-#include "image.h"
+#include "stx/image.h"
+#include "stx/value.h"
 #include "saving.h"
-#include "value.h"
 
-StxResult<gint32> to_gimp(const StxImage &data);
-StxResult<StxImage> from_gimp(
+stx::Result<gint32> to_gimp(const stx::Image &data);
+stx::Result<stx::Image> from_gimp(
   const StxParams &params,
   const gint32 drawable_id
 );
