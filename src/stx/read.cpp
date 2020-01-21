@@ -62,23 +62,12 @@ stx::Result<stx::Image> stx::read(stream &file) {
   if (!file.good())
     return ERR(stx::Error::EARLY_EOF);
 
-  size_t pixels = data.geometry.width * data.geometry.height;
-  data.image_data = new guchar[pixels * STX_NUM_CHANNELS];
-
-  char buffer[STX_NUM_CHANNELS];
-  for (size_t i = 0; i < pixels; i++) {
-    size_t pos = i * STX_NUM_CHANNELS;
-    file.read(buffer, STX_NUM_CHANNELS);
-    if (!file.good()) {
-      return ERR(stx::Error::EARLY_EOF);
-    }
-
-    // RGBA <- BGRA
-    data.image_data[pos] = buffer[2];
-    data.image_data[pos + 1] = buffer[1];
-    data.image_data[pos + 2] = buffer[0];
-    data.image_data[pos + 3] = buffer[3];
-  }
+  size_t bytes =
+    data.geometry.width *
+    data.geometry.height *
+    STX_NUM_CHANNELS;
+  data.image_data = new guchar[bytes];
+  file.read(data.image_data, bytes);
 
   if (!file.good())
     return ERR(stx::Error::EARLY_EOF);

@@ -1,5 +1,45 @@
+#include <babl/babl.h>
+
 #include "gimp_interop.h"
 #include "stx/structure.h"
+
+static long convert_rgba(const uint8_t *src, uint8_t *dst, long pixels) {
+  const Babl *bgra = babl_format_new(
+    babl_model("RGBA"),
+    babl_type("u8"),
+    babl_component("B"),
+    babl_component("G"),
+    babl_component("R"),
+    babl_component("A"),
+    NULL
+  );
+
+  const Babl *rgba = babl_format("RGBA");
+  const Babl *bgra_to_rgba = babl_fish(bgra, rgba);
+
+  babl_init();
+
+  return babl_process(bgra_to_rgba, src, dst, pixels);
+}
+
+static long convert_bgra(const uint8_t *src, uint8_t *dst, long pixels) {
+  const Babl *bgra = babl_format_new(
+    babl_model("RGBA"),
+    babl_type("u8"),
+    babl_component("B"),
+    babl_component("G"),
+    babl_component("R"),
+    babl_component("A"),
+    NULL
+  );
+
+  const Babl *rgba = babl_format("RGBA");
+  const Babl *rgba_to_bgra = babl_fish(rgba, bgra);
+
+  babl_init();
+
+  return babl_process(rgba_to_bgra, src, dst, pixels);
+}
 
 stx::Result<gint32> to_gimp(const stx::Image &data) {
   using Result = stx::Result<gint32>;
@@ -34,13 +74,19 @@ stx::Result<gint32> to_gimp(const stx::Image &data) {
     TRUE, TRUE
   );
 
+  long pixels = data.geometry.width * data.geometry.height;
+  uint8_t *tmp = new uint8_t[pixels * 4];
+  convert_rgba(data.image_data, tmp, pixels);
+
+  delete[] data.image_data;
+
   gimp_pixel_rgn_set_rect(
-    &rgn_out, data.image_data,
+    &rgn_out, tmp,
     0, 0,
     data.geometry.width, data.geometry.height
   );
 
-  delete[] data.image_data;
+  delete[] tmp;
 
   gimp_drawable_flush(drawable);
   gimp_drawable_merge_shadow(drawable->drawable_id, TRUE);
@@ -87,16 +133,7 @@ stx::Result<stx::Image> from_gimp(
   gimp_drawable_detach(drawable);
 
   img.image_data = new guchar[pixels * STX_NUM_CHANNELS];
-
-  for (size_t i = 0; i < pixels; i++) {
-    size_t src_pos = i * offset;
-    size_t dst_pos = i * STX_NUM_CHANNELS;
-    // RGBA -> BGRA
-    img.image_data[dst_pos] = data[src_pos + 2];
-    img.image_data[dst_pos + 1] = data[src_pos + 1];
-    img.image_data[dst_pos + 2] = data[src_pos];
-    img.image_data[dst_pos + 3] = has_alpha ? data[src_pos + 3] : 0xff;
-  }
+  convert_bgra(data, img.image_data, pixels);
 
   delete[] data;
 
