@@ -1,6 +1,5 @@
 #pragma once
 #include <cstdint>
-#include <glib.h>
 
 namespace stx {
   struct Geometry {
@@ -14,6 +13,6 @@ namespace stx {
     bool has_e6;
     uint8_t magical_number;
     Geometry geometry;
-    guchar* image_data;
+    char* image_data;
   };
 }

@@ -12,7 +12,7 @@ using stream = std::ofstream;
 static void build_geometry(
   char *buffer,
   const stx::Geometry &geometry,
-  guint8 magical_number
+  uint8_t magical_number
 ) {
   buffer[0] = 0x1a;
   buffer[2] = magical_number;

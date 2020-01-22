@@ -66,7 +66,7 @@ stx::Result<stx::Image> stx::read(stream &file) {
     data.geometry.width *
     data.geometry.height *
     STX_NUM_CHANNELS;
-  data.image_data = new guchar[bytes];
+  data.image_data = new char[bytes];
   file.read(data.image_data, bytes);
 
   if (!file.good())
