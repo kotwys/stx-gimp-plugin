@@ -40,18 +40,18 @@ bool save_dialog(StxParams &params) {
   gtk_box_pack_start(GTK_BOX(vbox), e6_checkbox, FALSE, FALSE, 0);
 
   auto scale_x_adjustment = gtk_adjustment_new(
-    100, 0, 10000, 1, 10, 5000
+    100, 0, 10000, 1, 10, 0
   );
   auto scale_x_box = number_field("Scale X", scale_x_adjustment);
   gtk_box_pack_start(GTK_BOX(vbox), scale_x_box, FALSE, FALSE, 0);
 
   auto *scale_y_adjustment = gtk_adjustment_new(
-    100, 0, 10000, 1, 10, 5000
+    100, 0, 10000, 1, 10, 0
   );
   auto scale_y_box = number_field("Scale Y", scale_y_adjustment);
   gtk_box_pack_start(GTK_BOX(vbox), scale_y_box, FALSE, FALSE, 0);
   
-  auto *magic_adjustment = gtk_adjustment_new(4, 1, 255, 1, 10, 255);
+  auto *magic_adjustment = gtk_adjustment_new(4, 1, 255, 1, 10, 0);
   auto magic_box = number_field("Magic number", magic_adjustment);
   gtk_box_pack_start(GTK_BOX(vbox), magic_box, FALSE, FALSE, 0);
 
