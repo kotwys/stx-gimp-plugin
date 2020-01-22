@@ -3,8 +3,6 @@
 This plugin allows to load textures in `.stx` format. It's used, for example,
 in Winx Club™ PC game (2006).
 
-**This plugin is written for pre-2.10 API**
-
 ![Screenshot](assets/screenshot.png)
 
 ## BUILDING
