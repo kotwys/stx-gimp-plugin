@@ -31,11 +31,11 @@ stx::Result<gint32> to_gimp(const stx::Image &data) {
 
   GeglBuffer *buffer = gimp_drawable_get_buffer(layer_id);
   const Babl *bgra = babl_format_new(
-    babl_model("RGBA"),
+    babl_model("R~G~B~A"),
     babl_type("u8"),
-    babl_component("B"),
-    babl_component("G"),
-    babl_component("R"),
+    babl_component("B~"),
+    babl_component("G~"),
+    babl_component("R~"),
     babl_component("A"),
     NULL
   );
@@ -81,11 +81,11 @@ stx::Result<stx::Image> from_gimp(
 
   img.image_data = new guchar[width * height * STX_NUM_CHANNELS];
   const Babl *bgra = babl_format_new(
-    babl_model("RGBA"),
+    babl_model("R~G~B~A"),
     babl_type("u8"),
-    babl_component("B"),
-    babl_component("G"),
-    babl_component("R"),
+    babl_component("B~"),
+    babl_component("G~"),
+    babl_component("R~"),
     babl_component("A"),
     NULL
   );
