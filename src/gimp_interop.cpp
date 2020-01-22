@@ -63,6 +63,8 @@ stx::Result<stx::Image> from_gimp(
   using Result = stx::Result<stx::Image>;
 
   stx::Image img;
+  img.has_e6 = params.e6_write;
+  img.magical_number = params.magical_number;
 
   GeglBuffer *buffer = gimp_drawable_get_buffer(drawable_id);
 

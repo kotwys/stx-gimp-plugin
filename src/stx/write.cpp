@@ -27,8 +27,6 @@ static void build_geometry(
 
 #define STX_E6 "\x04\x00\x00\x00\x06\x00\x00\x00"
 
-#define DEFAULT_NUMBER '\x04'
-
 stx::Result<std::monostate> stx::write(
   const stx::Image &img,
   std::ostream &file
@@ -37,21 +35,19 @@ stx::Result<std::monostate> stx::write(
 
   file.write(STX_MAGIC, STX_MAGIC_SIZE);
 
-  /*
-  if (params.e6_write)
+  if (img.has_e6)
     file.put(STX_E6_BEGIN)
       .write(STX_E6, STX_E6_SIZE);
-  */
 
   file.put(STX_E1_BEGIN);
   file.write("\x20\x00", 2)
-    .put(DEFAULT_NUMBER)
+    .put(img.magical_number)
     .put('\x00');
 
   file.put(STX_GEOM_BEGIN);
   char geom_buffer[STX_GEOM_SIZE] = {0};
 
-  build_geometry(geom_buffer, img.geometry, DEFAULT_NUMBER);
+  build_geometry(geom_buffer, img.geometry, img.magical_number);
   file.write(geom_buffer, STX_GEOM_SIZE);
 
   file.write("\x00\x00", 2);
