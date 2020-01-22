@@ -8,12 +8,11 @@
 
 using stream = std::istream;
 
-static stx::Error parse_geometry(const char *buffer, stx::Geometry &geom) {
+static void parse_geometry(const char *buffer, stx::Geometry &geom) {
   geom.scale_x = read_l16(buffer + 5);
   geom.scale_y = read_l16(buffer + 9);
   geom.width = read_l16(buffer + 18);
   geom.height = read_l16(buffer + 26);
-  return stx::Error::SUCCESS;
 }
 
 stx::Result<stx::Image> stx::read(stream &file) {
@@ -48,11 +47,8 @@ stx::Result<stx::Image> stx::read(stream &file) {
         return ERR(stx::Error::EARLY_EOF);
       }
 
-      stx::Error err = parse_geometry(buffer, data.geometry);
+      parse_geometry(buffer, data.geometry);
       delete[] buffer;
-      if (err != stx::Error::SUCCESS) {
-        return ERR(err);
-      }
     } else if (opener == STX_DELIMITER) {
       break;
     }

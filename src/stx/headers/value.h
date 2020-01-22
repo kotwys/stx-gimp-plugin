@@ -3,7 +3,6 @@
 
 namespace stx {
   enum class Error {
-    SUCCESS,
     OPEN_FAILED,
     WRONG_TYPE,
     EARLY_EOF,
