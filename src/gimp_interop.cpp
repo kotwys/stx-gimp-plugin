@@ -81,7 +81,7 @@ stx::Result<stx::Image> from_gimp(
 
   babl_init();
 
-  img.image_data = new char[width * height * STX_NUM_CHANNELS];
+  img.image_data = new unsigned char[width * height * STX_NUM_CHANNELS];
   const Babl *bgra = babl_format_new(
     babl_model("R~G~B~A"),
     babl_type("u8"),

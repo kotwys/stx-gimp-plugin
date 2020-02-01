@@ -1,9 +1,9 @@
 #pragma once
 
-#include <iostream>
+#include <gio/gio.h>
 #include "stx/image.h"
 #include "stx/value.h"
 
 namespace stx {
-  stx::Result<stx::Image> read(std::istream &file);
+  stx::Result<stx::Image> read(GInputStream *file);
 }

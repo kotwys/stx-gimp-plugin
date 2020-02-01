@@ -13,6 +13,6 @@ namespace stx {
     bool has_e6;
     uint8_t magical_number;
     Geometry geometry;
-    char* image_data;
+    unsigned char* image_data;
   };
 }
