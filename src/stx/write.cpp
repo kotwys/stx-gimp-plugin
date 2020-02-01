@@ -1,6 +1,3 @@
-#include <algorithm>
-#include <libgimp/gimp.h>
-
 #include "stx/bytes.h"
 #include "stx/structure.h"
 #include "stx/write.h"

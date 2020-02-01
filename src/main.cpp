@@ -1,5 +1,3 @@
-#include <cstring>
-#include <fstream>
 #include <variant>
 #include <libgimp/gimp.h>
 #include <libgimp/gimpui.h>
@@ -86,7 +84,7 @@ stx::Result<gint32> load_stx(const char *filename) {
   g_autoptr(GFile) file = g_file_new_for_path(filename);
   g_autoptr(GFileInputStream) input = g_file_read(file, NULL, &err);
   if (err != NULL) {
-    return stx::Result<gint32>::leftOf(stx::Error::OPEN_FAILED);
+    return ERR(stx::Error::OPEN_FAILED);
   }
 
   auto result = stx::read(G_INPUT_STREAM(input))

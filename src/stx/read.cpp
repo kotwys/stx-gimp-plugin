@@ -1,12 +1,10 @@
 #include <algorithm>
-#include <sstream>
-#include <libgimp/gimp.h>
 
 #include "stx/bytes.h"
 #include "stx/structure.h"
 #include "stx/read.h"
 
-static void parse_geometry(const char *buffer, stx::Geometry &geom) {
+static void parse_geometry(const unsigned char *buffer, stx::Geometry &geom) {
   geom.scale_x = read_l16(buffer + 5);
   geom.scale_y = read_l16(buffer + 9);
   geom.width = read_l16(buffer + 18);
