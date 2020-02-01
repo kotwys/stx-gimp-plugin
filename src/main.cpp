@@ -1,13 +1,12 @@
-#include <cstring>
-#include <fstream>
 #include <variant>
 #include <libgimp/gimp.h>
 #include <libgimp/gimpui.h>
 
+#include "stx/read.h"
+#include "stx/write.h"
 #include "dialog.h"
-#include "stxread.h"
-#include "stxwrite.h"
-#include "value.h"
+#include "gimp_interop.h"
+#include "saving.h"
 
 #define LOAD_PROC "file_stx_load"
 #define SAVE_PROC "file_stx_save"
@@ -78,42 +77,46 @@ static void query() {
   gimp_register_save_handler(SAVE_PROC, "stx", "");
 }
 
-StxResult<gint32> load_stx(const char *filename) {
-  using stream = std::ifstream;
+stx::Result<gint32> load_stx(const char *filename) {
+  using Result = stx::Result<gint32>;
 
-  stream file(filename, stream::in | stream::binary);
-  if (!file.good()) {
-    file.close();
-    return StxResult<gint32>::leftOf(StxError::OPEN_FAILED);
+  g_autoptr(GError) err = NULL;
+  g_autoptr(GFile) file = g_file_new_for_path(filename);
+  g_autoptr(GFileInputStream) input = g_file_read(file, NULL, &err);
+  if (err != NULL) {
+    return ERR(stx::Error::OPEN_FAILED);
   }
 
-  auto result = read(file)
-    .rightFlatMap(to_image)
+  auto result = stx::read(G_INPUT_STREAM(input))
+    .rightFlatMap(to_gimp)
     .rightMap([filename](const gint32 image_id) {
       gimp_image_set_filename(image_id, filename);
       return image_id;
     });
 
-  file.close();
-
   return result;
 }
 
-StxResult<std::monostate> save_stx(
+stx::Result<std::monostate> save_stx(
   const char* filename,
   gint32 drawable_id,
   const StxParams &params
 ) {
-  using stream = std::ofstream;
+  using Result = stx::Result<std::monostate>;
 
-  stream file(filename, stream::out | stream::binary);
-  if (!file.good()) {
-    file.close();
-    return StxResult<std::monostate>::leftOf(StxError::OPEN_FAILED);
-  }
+  g_autoptr(GError) err = NULL;
+  g_autoptr(GFile) file = g_file_new_for_path(filename);
+  g_autoptr(GFileOutputStream) output = g_file_replace(
+    file, NULL, FALSE, G_FILE_CREATE_NONE,
+    NULL, &err
+  );
+  if (err != NULL)
+    return ERR(stx::Error::OPEN_FAILED);
 
-  auto result = write(params, drawable_id, file);
-  file.close();
+  auto result = from_gimp(params, drawable_id)
+    .rightFlatMap([output](const stx::Image &img) {
+      return stx::write(img, G_OUTPUT_STREAM(output));
+    });
 
   return result;
 }

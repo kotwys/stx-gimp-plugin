@@ -1,5 +1,5 @@
 #pragma once
-#include "stxwrite.h"
+#include "saving.h"
 
 #define DIALOG_ID "file-stx"
 

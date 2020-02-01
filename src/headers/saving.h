@@ -1,8 +1,6 @@
 #pragma once
-#include <variant>
+
 #include <glib.h>
-#include <fstream>
-#include "value.h"
 
 struct StxParams {
   guint16 scale_x;
@@ -12,9 +10,3 @@ struct StxParams {
 };
 
 StxParams default_params();
-
-StxResult<std::monostate> write(
-  const StxParams &params,
-  gint32 drawable_id,
-  std::ofstream &file
-);
