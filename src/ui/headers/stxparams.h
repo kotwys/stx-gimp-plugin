@@ -10,7 +10,7 @@ struct _StxParams {
   guint16 scale_x;
   guint16 scale_y;
   gboolean e6_write;
-  guint8 magical_number;
+  guint16 magical_number;
 };
 
 StxParams stx_params_default();

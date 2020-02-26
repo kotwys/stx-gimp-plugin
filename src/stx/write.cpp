@@ -15,10 +15,10 @@ static void g_output_stream_push(
 static void build_geometry(
   unsigned char *buffer,
   const stx::Geometry &geometry,
-  uint8_t magical_number
+  uint16_t magical_number
 ) {
   buffer[0] = 0x1a;
-  buffer[2] = magical_number;
+  write_l16(buffer + 1, magical_number);
   buffer[4] = 0x01;
   write_l16(buffer + 5, CONVERT_SCALE(geometry.scale_x));
   write_l16(buffer + 9, CONVERT_SCALE(geometry.scale_y));
@@ -45,8 +45,13 @@ stx::Result<std::monostate> stx::write(
     }
 
     g_output_stream_push(file, STX_E1_BEGIN);
-    file->write("\x20\x00", 2);
-    g_output_stream_push(file, img.magical_number);
+    g_output_stream_push(file, '\x20');
+
+    {
+      unsigned char magic_buffer[2];
+      write_l16(magic_buffer, img.magical_number);
+      file->write(magic_buffer, 2);
+    }
     g_output_stream_push(file, '\x00');
 
     g_output_stream_push(file, STX_GEOM_BEGIN);

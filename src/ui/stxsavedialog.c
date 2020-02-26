@@ -114,7 +114,7 @@ static void update_magic(
   StxSaveDialog *self
 ) {
   self->params->magical_number =
-    (guint8) stx_number_field_get_value_as_int(field);
+    (guint16) stx_number_field_get_value_as_int(field);
 }
 
 static void stx_save_dialog_init(StxSaveDialog *self) {
@@ -165,7 +165,7 @@ static void stx_save_dialog_init(StxSaveDialog *self) {
   );
   gtk_box_pack_start(GTK_BOX(vbox), self->scale_y_box, FALSE, FALSE, 0);
   
-  GtkObject *magic_adjustment = gtk_adjustment_new(4, 1, 255, 1, 10, 0);
+  GtkObject *magic_adjustment = gtk_adjustment_new(1024, 1, 65535, 1, 10, 0);
   self->magic_box = stx_number_field_new(
     "Magic number",
     GTK_ADJUSTMENT(magic_adjustment)

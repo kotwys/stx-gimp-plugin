@@ -11,7 +11,7 @@ namespace stx {
 
   struct Image {
     bool has_e6;
-    uint8_t magical_number;
+    uint16_t magical_number;
     Geometry geometry;
     unsigned char* image_data;
   };
