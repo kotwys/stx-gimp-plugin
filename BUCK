@@ -19,6 +19,7 @@ cxx_binary(
   deps = [
     '//src/stx:stx',
     '//external/gimp-2.0:gimp-2.0',
-    '//external/gimpui-2.0:gimpui-2.0'
+    '//external/gimpui-2.0:gimpui-2.0',
+    '//external/gtkmm-2.0:gtkmm-2.0'
   ] + buckaroo_deps()
 )

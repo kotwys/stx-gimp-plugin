@@ -1,5 +1,3 @@
-#include <giomm.h>
-
 #include "stx/bytes.h"
 #include "stx/structure.h"
 #include "stx/write.h"
@@ -34,12 +32,9 @@ static void build_geometry(
 
 stx::Result<std::monostate> stx::write(
   const stx::Image &img,
-  GOutputStream *cfile
+  Glib::RefPtr<Gio::OutputStream> file
 ) {
-  Gio::init();
-
   using Result = stx::Result<std::monostate>;
-  auto file = Glib::wrap(cfile, false);
 
   try {
     file->write(STX_MAGIC, STX_MAGIC_SIZE);

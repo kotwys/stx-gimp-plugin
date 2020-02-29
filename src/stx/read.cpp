@@ -1,5 +1,4 @@
 #include <algorithm>
-#include <giomm.h>
 
 #include "stx/bytes.h"
 #include "stx/structure.h"
@@ -12,11 +11,8 @@ static void parse_geometry(const unsigned char *buffer, stx::Geometry &geom) {
   geom.height = read_l16(buffer + 26);
 }
 
-stx::Result<stx::Image> stx::read(GInputStream *cfile) {
-  Gio::init();
-
+stx::Result<stx::Image> stx::read(Glib::RefPtr<Gio::InputStream> file) {
   using Result = stx::Result<stx::Image>;
-  auto file = Glib::wrap(cfile, false);
 
   try {
     unsigned char magic[STX_MAGIC_SIZE];

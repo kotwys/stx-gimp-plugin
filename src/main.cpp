@@ -1,4 +1,5 @@
 #include <variant>
+#include <giomm.h>
 #include <libgimp/gimp.h>
 #include <libgimp/gimpui.h>
 
@@ -80,21 +81,22 @@ static void query() {
 stx::Result<gint32> load_stx(const char *filename) {
   using Result = stx::Result<gint32>;
 
-  g_autoptr(GError) err = NULL;
-  g_autoptr(GFile) file = g_file_new_for_path(filename);
-  g_autoptr(GFileInputStream) input = g_file_read(file, NULL, &err);
-  if (err != NULL) {
+  Gio::init();
+  auto file = Gio::File::create_for_path(filename);
+
+  try {
+    auto input = file->read();
+    auto result = stx::read(input)
+      .rightFlatMap(to_gimp)
+      .rightMap([filename](const gint32 image_id) {
+        gimp_image_set_filename(image_id, filename);
+        return image_id;
+      });
+
+    return result;
+  } catch (Glib::Error err) {
     return ERR(stx::Error::OPEN_FAILED);
   }
-
-  auto result = stx::read(G_INPUT_STREAM(input))
-    .rightFlatMap(to_gimp)
-    .rightMap([filename](const gint32 image_id) {
-      gimp_image_set_filename(image_id, filename);
-      return image_id;
-    });
-
-  return result;
 }
 
 stx::Result<std::monostate> save_stx(
@@ -104,21 +106,19 @@ stx::Result<std::monostate> save_stx(
 ) {
   using Result = stx::Result<std::monostate>;
 
-  g_autoptr(GError) err = NULL;
-  g_autoptr(GFile) file = g_file_new_for_path(filename);
-  g_autoptr(GFileOutputStream) output = g_file_replace(
-    file, NULL, FALSE, G_FILE_CREATE_NONE,
-    NULL, &err
-  );
-  if (err != NULL)
+  Gio::init();
+  auto file = Gio::File::create_for_path(filename);
+  try {
+    auto output = file->replace();
+    auto result = from_gimp(params, drawable_id)
+      .rightFlatMap([output](const stx::Image &img) {
+        return stx::write(img, output);
+      });
+
+    return result;
+  } catch (Glib::Error err) {
     return ERR(stx::Error::OPEN_FAILED);
-
-  auto result = from_gimp(params, drawable_id)
-    .rightFlatMap([output](const stx::Image &img) {
-      return stx::write(img, G_OUTPUT_STREAM(output));
-    });
-
-  return result;
+  }
 }
 
 static void run(
