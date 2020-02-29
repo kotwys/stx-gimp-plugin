@@ -8,6 +8,6 @@
 namespace stx {
   stx::Result<std::monostate> write(
     const stx::Image &img,
-    GOutputStream *file
+    GOutputStream *cfile
   );
 }
