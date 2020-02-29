@@ -5,5 +5,5 @@
 #include "stx/value.h"
 
 namespace stx {
-  stx::Result<stx::Image> read(GInputStream *file);
+  stx::Result<stx::Image> read(GInputStream *cfile);
 }
