@@ -5,9 +5,9 @@
 
 #include "stx/read.h"
 #include "stx/write.h"
+#include "ui/stxparams.h"
 #include "dialog.h"
 #include "gimp_interop.h"
-#include "saving.h"
 
 #define LOAD_PROC "file_stx_load"
 #define SAVE_PROC "file_stx_save"
@@ -157,7 +157,7 @@ static void run(
     gint32 image_id = param[1].data.d_int32;
     gint32 drawable_id = param[2].data.d_int32;
     
-    StxParams params = default_params();
+    StxParams params = stx_params_default();
     
     if (run_mode != GIMP_RUN_NONINTERACTIVE) {
       gimp_ui_init(DIALOG_ID, FALSE);

@@ -1,0 +1,17 @@
+load('//:subdir_glob.bzl', 'subdir_glob')
+
+cxx_library(
+  name = 'ui',
+  header_namespace = 'ui',
+  srcs = [
+    'stxsavedialog.c',
+    'stxparams.c'
+  ],
+  exported_headers = subdir_glob([
+    ('headers', '**/*.h')
+  ]),
+  deps = [
+    '//external/gtkmm-2.0:gtkmm-2.0'
+  ],
+  visibility = ['PUBLIC']
+)

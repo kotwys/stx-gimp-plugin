@@ -1,6 +1,6 @@
-#include "saving.h"
+#include "ui/stxparams.h"
 
-StxParams default_params() {
+StxParams stx_params_default() {
   StxParams params;
   params.scale_x = 100;
   params.scale_y = 100;
