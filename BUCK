@@ -13,12 +13,13 @@ cxx_binary(
   srcs = [
     'src/main.cpp',
     'src/dialog.cpp',
-    'src/saving.cpp',
     'src/gimp_interop.cpp'
   ],
   deps = [
     '//src/stx:stx',
+    '//src/ui:ui',
     '//external/gimp-2.0:gimp-2.0',
-    '//external/gimpui-2.0:gimpui-2.0'
+    '//external/gimpui-2.0:gimpui-2.0',
+    '//external/gtkmm-2.0:gtkmm-2.0'
   ] + buckaroo_deps()
 )

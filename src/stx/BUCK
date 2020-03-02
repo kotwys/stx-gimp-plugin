@@ -16,7 +16,8 @@ cxx_library(
     ('headers', '**/*.h')
   ]),
   deps = [
-    '//external/gimp-2.0:gimp-2.0'
+    '//external/gimp-2.0:gimp-2.0',
+    '//external/gtkmm-2.0:gtkmm-2.0'
   ] + buckaroo_deps(),
   visibility = ['PUBLIC']
 )

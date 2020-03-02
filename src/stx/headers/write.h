@@ -1,6 +1,6 @@
 #pragma once
 #include <variant>
-#include <gio/gio.h>
+#include <giomm.h>
 
 #include "stx/image.h"
 #include "stx/value.h"
@@ -8,6 +8,6 @@
 namespace stx {
   stx::Result<std::monostate> write(
     const stx::Image &img,
-    GOutputStream *file
+    Glib::RefPtr<Gio::OutputStream> file
   );
 }
