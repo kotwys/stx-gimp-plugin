@@ -92,9 +92,9 @@ static void stx_number_field_class_init(StxNumberFieldClass *klass) {
 
   obj_properties[PROP_VALUE] = g_param_spec_double(
     "value", "Value",
-    "Current value",
-    G_MAXDOUBLE, G_MINDOUBLE,
-    0, G_PARAM_READWRITE
+    "Current value.",
+    -G_MAXDOUBLE, G_MAXDOUBLE,
+    0.0, G_PARAM_READWRITE
   );
 
   g_object_class_install_properties(
@@ -122,4 +122,10 @@ GtkWidget *stx_number_field_new(
     "adjustment", adjustment,
     NULL
   );
+}
+
+gint stx_number_field_get_value_as_int(StxNumberField *field) {
+  gdouble value;
+  g_object_get(G_OBJECT(field), "value", &value, NULL);
+  return (gint) value;
 }

@@ -57,21 +57,18 @@ static void stx_save_dialog_get_property(
   switch ((StxDialogProperty) property_id) {
     case PROP_DATA:
       // temporary solution
-      g_object_get(
-        G_OBJECT(self->scale_x_box),
-        "value", (gdouble*) &self->params->scale_x,
-        NULL
-      );
-      g_object_get(
-        G_OBJECT(self->scale_y_box),
-        "value", (gdouble*) &self->params->scale_y,
-        NULL
-      );
-      g_object_get(
-        G_OBJECT(self->magic_box),
-        "value", (gdouble*) &self->params->magical_number,
-        NULL
-      );
+      self->params->scale_x =
+        (guint16) stx_number_field_get_value_as_int(
+          STX_NUMBER_FIELD(self->scale_x_box)
+        );
+      self->params->scale_y =
+        (guint16) stx_number_field_get_value_as_int(
+          STX_NUMBER_FIELD(self->scale_y_box)
+        );
+      self->params->magical_number =
+        (guint8) stx_number_field_get_value_as_int(
+          STX_NUMBER_FIELD(self->magic_box)
+        );
       self->params->e6_write = gtk_toggle_button_get_active(
         GTK_TOGGLE_BUTTON(self->e6_checkbox)
       );

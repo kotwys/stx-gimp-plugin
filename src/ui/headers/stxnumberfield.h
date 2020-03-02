@@ -23,6 +23,7 @@ GtkWidget *stx_number_field_new(
   const gchar *label,
   GtkAdjustment *adjustment
 );
+gint stx_number_field_get_value_as_int(StxNumberField *field);
 
 G_END_DECLS
 
