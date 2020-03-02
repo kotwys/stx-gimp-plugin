@@ -56,22 +56,6 @@ static void stx_save_dialog_get_property(
 
   switch ((StxDialogProperty) property_id) {
     case PROP_DATA:
-      // temporary solution
-      self->params->scale_x =
-        (guint16) stx_number_field_get_value_as_int(
-          STX_NUMBER_FIELD(self->scale_x_box)
-        );
-      self->params->scale_y =
-        (guint16) stx_number_field_get_value_as_int(
-          STX_NUMBER_FIELD(self->scale_y_box)
-        );
-      self->params->magical_number =
-        (guint8) stx_number_field_get_value_as_int(
-          STX_NUMBER_FIELD(self->magic_box)
-        );
-      self->params->e6_write = gtk_toggle_button_get_active(
-        GTK_TOGGLE_BUTTON(self->e6_checkbox)
-      );
       g_value_set_pointer(value, self->params);
       break;
 
@@ -102,6 +86,37 @@ static void stx_save_dialog_class_init(StxSaveDialogClass *klass) {
   );
 }
 
+static void update_e6_write(
+  GtkToggleButton *button,
+  StxSaveDialog *self
+) {
+  self->params->e6_write = gtk_toggle_button_get_active(button);
+}
+
+static void update_scale_x(
+  StxNumberField *field,
+  StxSaveDialog *self
+) {
+  self->params->scale_x =
+    (guint16) stx_number_field_get_value_as_int(field);
+}
+
+static void update_scale_y(
+  StxNumberField *field,
+  StxSaveDialog *self
+) {
+  self->params->scale_y =
+    (guint16) stx_number_field_get_value_as_int(field);
+}
+
+static void update_magic(
+  StxNumberField *field,
+  StxSaveDialog *self
+) {
+  self->params->magical_number =
+    (guint8) stx_number_field_get_value_as_int(field);
+}
+
 static void stx_save_dialog_init(StxSaveDialog *self) {
   gtk_window_set_title(GTK_WINDOW(self), "Save STX texture");
   gtk_window_set_role(GTK_WINDOW(self), DIALOG_ID);
@@ -118,6 +133,10 @@ static void stx_save_dialog_init(StxSaveDialog *self) {
 
   self->e6_checkbox =
     gtk_check_button_new_with_label("Write E6 section?");
+  g_signal_connect(
+    self->e6_checkbox, "toggled",
+    (GCallback) update_e6_write, self
+  );
   gtk_box_pack_start(GTK_BOX(vbox), self->e6_checkbox, FALSE, FALSE, 0);
 
   GtkObject *scale_x_adjustment = gtk_adjustment_new(
@@ -126,6 +145,10 @@ static void stx_save_dialog_init(StxSaveDialog *self) {
   self->scale_x_box = stx_number_field_new(
     "Scale X",
     GTK_ADJUSTMENT(scale_x_adjustment)
+  );
+  g_signal_connect(
+    self->scale_x_box, "value-changed",
+    (GCallback) update_scale_x, self
   );
   gtk_box_pack_start(GTK_BOX(vbox), self->scale_x_box, FALSE, FALSE, 0);
 
@@ -136,12 +159,20 @@ static void stx_save_dialog_init(StxSaveDialog *self) {
     "Scale Y",
     GTK_ADJUSTMENT(scale_y_adjustment)
   );
+  g_signal_connect(
+    self->scale_y_box, "value-changed",
+    (GCallback) update_scale_y, self
+  );
   gtk_box_pack_start(GTK_BOX(vbox), self->scale_y_box, FALSE, FALSE, 0);
   
   GtkObject *magic_adjustment = gtk_adjustment_new(4, 1, 255, 1, 10, 0);
   self->magic_box = stx_number_field_new(
     "Magic number",
     GTK_ADJUSTMENT(magic_adjustment)
+  );
+  g_signal_connect(
+    self->magic_box, "value-changed",
+    (GCallback) update_magic, self
   );
   gtk_box_pack_start(GTK_BOX(vbox), self->magic_box, FALSE, FALSE, 0);
 }

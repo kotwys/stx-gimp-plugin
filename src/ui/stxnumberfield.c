@@ -7,7 +7,13 @@ typedef enum {
   N_PROPERTIES
 } NumberFieldProps;
 
+enum {
+  VALUE_CHANGED,
+  N_SIGNALS
+};
+
 static GParamSpec *obj_properties[N_PROPERTIES] = { NULL, };
+static guint obj_signals[N_SIGNALS] = { 0, };
 
 struct _StxNumberField {
   GtkHBox parent_instance;
@@ -100,6 +106,21 @@ static void stx_number_field_class_init(StxNumberFieldClass *klass) {
   g_object_class_install_properties(
     object_class, N_PROPERTIES, obj_properties
   );
+
+  obj_signals[VALUE_CHANGED] = g_signal_new(
+    "value-changed",
+    G_TYPE_FROM_CLASS(object_class),
+    G_SIGNAL_RUN_LAST,
+    0, NULL, NULL, NULL,
+    G_TYPE_NONE, 0
+  );
+}
+
+static void stx_number_field_on_value_changed(
+  GtkSpinButton *spin,
+  StxNumberField *self
+) {
+  g_signal_emit(self, obj_signals[VALUE_CHANGED], 0, self);
 }
 
 static void stx_number_field_init(StxNumberField *self) {
@@ -109,6 +130,11 @@ static void stx_number_field_init(StxNumberField *self) {
   gtk_box_pack_start(GTK_BOX(self), self->label, FALSE, FALSE, 0);
 
   self->spin = gtk_spin_button_new_with_range(G_MINDOUBLE, G_MAXDOUBLE, 1);
+  g_signal_connect(
+    self->spin, "value-changed",
+    (GCallback) stx_number_field_on_value_changed,
+    self
+  );
   gtk_box_pack_start(GTK_BOX(self), self->spin, FALSE, FALSE, 0);
 }
 

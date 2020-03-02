@@ -10,11 +10,6 @@ bool save_dialog(StxParams &params) {
   auto dialog = stx_save_dialog_new(&params);
   gtk_widget_show_all(dialog);
   auto response = gtk_dialog_run(GTK_DIALOG(dialog));
-
-  if (response == GTK_RESPONSE_OK) {
-    g_object_get(G_OBJECT(dialog), "model-data", NULL);
-  }
-
   gtk_widget_destroy(dialog);
 
   return response == GTK_RESPONSE_OK;
