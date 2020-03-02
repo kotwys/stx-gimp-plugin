@@ -5,7 +5,8 @@ cxx_library(
   header_namespace = 'ui',
   srcs = [
     'stxsavedialog.c',
-    'stxparams.c'
+    'stxparams.c',
+    'stxnumberfield.c'
   ],
   exported_headers = subdir_glob([
     ('headers', '**/*.h')
