@@ -48,7 +48,7 @@ static void query() {
     { GIMP_PDB_STRING, "filename", "The name of the file to export the image in" },
     { GIMP_PDB_STRING, "raw-filename", "The name of the file to export the image in" },
     { GIMP_PDB_INT32, "e6-write", "Write E6 section?" },
-    { GIMP_PDB_INT8, "magical-number", "Some magical number" },
+    { GIMP_PDB_INT16, "magical-number", "Some magical number" },
     { GIMP_PDB_INT32, "scale-x", "Scale X" },
     { GIMP_PDB_INT32, "scale-y", "Scale Y" }
   };
@@ -186,7 +186,7 @@ static void run(
         status = GIMP_PDB_CALLING_ERROR;
       } else {
         params.e6_write = param[5].data.d_int32;
-        params.magical_number = param[6].data.d_int8;
+        params.magical_number = param[6].data.d_int16;
         params.scale_x = param[7].data.d_int32;
         params.scale_y = param[8].data.d_int32;
       }
