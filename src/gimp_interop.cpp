@@ -57,14 +57,14 @@ stx::Result<gint32> to_gimp(const stx::Image &data) {
 }
 
 stx::Result<stx::Image> from_gimp(
-  const StxParams &params,
+  const StxConfig &config,
   const gint32 drawable_id
 ) {
   using Result = stx::Result<stx::Image>;
 
   stx::Image img;
-  img.has_e6 = params.e6_write;
-  img.magical_number = params.magical_number;
+  img.has_e6 = config.e6_write;
+  img.magical_number = config.magical_number;
 
   GeglBuffer *buffer = gimp_drawable_get_buffer(drawable_id);
 
@@ -74,8 +74,8 @@ stx::Result<stx::Image> from_gimp(
   stx::Geometry geometry = {
     width,
     height,
-    params.scale_x,
-    params.scale_y
+    config.scale_x,
+    config.scale_y
   };
   img.geometry = geometry;
 

@@ -9,11 +9,11 @@ struct _StxSaveDialog {
   GtkWidget *scale_y_box;
   GtkWidget *magic_box;
 
-  StxParams *params;
+  StxConfig *config;
 };
 
 typedef enum {
-  PROP_DATA = 1,
+  PROP_CONFIG = 1,
   N_PROPERTIES
 } StxDialogProperty;
 
@@ -31,8 +31,8 @@ static void stx_save_dialog_set_property(
   GtkDialog parent = self->parent_instance;
 
   switch ((StxDialogProperty) property_id) {
-    case PROP_DATA:
-      self->params = g_value_get_pointer(value);
+    case PROP_CONFIG:
+      self->config = g_value_get_pointer(value);
       break;
 
     default:
@@ -55,8 +55,8 @@ static void stx_save_dialog_get_property(
   GtkDialog parent = self->parent_instance;
 
   switch ((StxDialogProperty) property_id) {
-    case PROP_DATA:
-      g_value_set_pointer(value, self->params);
+    case PROP_CONFIG:
+      g_value_set_pointer(value, self->config);
       break;
 
     default:
@@ -75,9 +75,9 @@ static void stx_save_dialog_class_init(StxSaveDialogClass *klass) {
   object_class->set_property = stx_save_dialog_set_property;
   object_class->get_property = stx_save_dialog_get_property;
 
-  obj_properties[PROP_DATA] = g_param_spec_pointer(
-    "model-data", "Model data",
-    "Model data to use",
+  obj_properties[PROP_CONFIG] = g_param_spec_pointer(
+    "config", "Saving config",
+    "Configuration for saving.",
     G_PARAM_READWRITE
   );
 
@@ -90,14 +90,14 @@ static void update_e6_write(
   GtkToggleButton *button,
   StxSaveDialog *self
 ) {
-  self->params->e6_write = gtk_toggle_button_get_active(button);
+  self->config->e6_write = gtk_toggle_button_get_active(button);
 }
 
 static void update_scale_x(
   StxNumberField *field,
   StxSaveDialog *self
 ) {
-  self->params->scale_x =
+  self->config->scale_x =
     (guint16) stx_number_field_get_value_as_int(field);
 }
 
@@ -105,7 +105,7 @@ static void update_scale_y(
   StxNumberField *field,
   StxSaveDialog *self
 ) {
-  self->params->scale_y =
+  self->config->scale_y =
     (guint16) stx_number_field_get_value_as_int(field);
 }
 
@@ -113,7 +113,7 @@ static void update_magic(
   StxNumberField *field,
   StxSaveDialog *self
 ) {
-  self->params->magical_number =
+  self->config->magical_number =
     (guint16) stx_number_field_get_value_as_int(field);
 }
 
@@ -177,9 +177,9 @@ static void stx_save_dialog_init(StxSaveDialog *self) {
   gtk_box_pack_start(GTK_BOX(vbox), self->magic_box, FALSE, FALSE, 0);
 }
 
-GtkWidget *stx_save_dialog_new(StxParams *params) {
+GtkWidget *stx_save_dialog_new(StxConfig *config) {
   return (GtkWidget*) g_object_new(
     stx_save_dialog_get_type(),
-    "model-data", params, NULL
+    "config", config, NULL
   );
 }

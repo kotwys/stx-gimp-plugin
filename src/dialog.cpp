@@ -3,11 +3,11 @@
 #include <libgimp/gimpui.h>
 
 #include "ui/stxsavedialog.h"
-#include "ui/stxparams.h"
+#include "ui/stxconfig.h"
 #include "dialog.h"
 
-bool save_dialog(StxParams &params) {
-  auto dialog = stx_save_dialog_new(&params);
+bool save_dialog(StxConfig &config) {
+  auto dialog = stx_save_dialog_new(&config);
   gtk_widget_show_all(dialog);
   auto response = gtk_dialog_run(GTK_DIALOG(dialog));
   gtk_widget_destroy(dialog);

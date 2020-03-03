@@ -2,7 +2,7 @@
 #define __STX_DIALOG_H__
 
 #include <gtk/gtk.h>
-#include "ui/stxparams.h"
+#include "ui/stxconfig.h"
 
 #define DIALOG_ID "file-stx"
 
@@ -22,7 +22,7 @@ struct _StxSaveDialogClass {
 };
 
 GType stx_save_dialog_get_type(void);
-GtkWidget *stx_save_dialog_new(StxParams *params);
+GtkWidget *stx_save_dialog_new(StxConfig *config);
 
 G_END_DECLS
 

@@ -5,7 +5,7 @@
 
 #include "stx/read.h"
 #include "stx/write.h"
-#include "ui/stxparams.h"
+#include "ui/stxconfig.h"
 #include "dialog.h"
 #include "gimp_interop.h"
 
@@ -102,7 +102,7 @@ stx::Result<gint32> load_stx(const char *filename) {
 stx::Result<std::monostate> save_stx(
   const char* filename,
   gint32 drawable_id,
-  const StxParams &params
+  const StxConfig &config
 ) {
   using Result = stx::Result<std::monostate>;
 
@@ -110,7 +110,7 @@ stx::Result<std::monostate> save_stx(
   auto file = Gio::File::create_for_path(filename);
   try {
     auto output = file->replace();
-    auto result = from_gimp(params, drawable_id)
+    auto result = from_gimp(config, drawable_id)
       .rightFlatMap([output](const stx::Image &img) {
         return stx::write(img, output);
       });
@@ -157,7 +157,7 @@ static void run(
     gint32 image_id = param[1].data.d_int32;
     gint32 drawable_id = param[2].data.d_int32;
     
-    StxParams params = stx_params_default();
+    StxConfig config = stx_config_default();
     
     if (run_mode != GIMP_RUN_NONINTERACTIVE) {
       gimp_ui_init(DIALOG_ID, FALSE);
@@ -176,31 +176,31 @@ static void run(
         return;
       }
 
-      gimp_get_data(SAVE_PROC, &params);
+      gimp_get_data(SAVE_PROC, &config);
       if (run_mode == GIMP_RUN_INTERACTIVE) {
-        if (!save_dialog(params))
+        if (!save_dialog(config))
           status = GIMP_PDB_CANCEL;
       }
     } else {
       if (nparams != 9) {
         status = GIMP_PDB_CALLING_ERROR;
       } else {
-        params.e6_write = param[5].data.d_int32;
-        params.magical_number = param[6].data.d_int16;
-        params.scale_x = param[7].data.d_int32;
-        params.scale_y = param[8].data.d_int32;
+        config.e6_write = param[5].data.d_int32;
+        config.magical_number = param[6].data.d_int16;
+        config.scale_x = param[7].data.d_int32;
+        config.scale_y = param[8].data.d_int32;
       }
     }
 
     if (status == GIMP_PDB_SUCCESS) {
       auto result = save_stx(
         param[3].data.d_string,
-        drawable_id, params
+        drawable_id, config
       );
       if (result.isLeft) {
         status = GIMP_PDB_EXECUTION_ERROR;
       } else {
-        gimp_set_data(SAVE_PROC, &params, sizeof(params));
+        gimp_set_data(SAVE_PROC, &config, sizeof(config));
       }
     }
   } else {

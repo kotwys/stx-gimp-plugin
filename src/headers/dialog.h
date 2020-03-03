@@ -1,6 +1,6 @@
 #pragma once
-#include "ui/stxparams.h"
+#include "ui/stxconfig.h"
 
 #define DIALOG_ID "file-stx"
 
-bool save_dialog(StxParams &params);
+bool save_dialog(StxConfig &config);
