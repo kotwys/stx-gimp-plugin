@@ -2,7 +2,7 @@
 #define __STX_DIALOG_H__
 
 #include <gtk/gtk.h>
-#include "ui/stxconfig.h"
+#include "stxconfig.h"
 
 #define DIALOG_ID "file-stx"
 

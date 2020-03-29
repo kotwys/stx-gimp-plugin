@@ -1,10 +1,9 @@
-#include <gtkmm.h>
+#include <gtk/gtk.h>
 #include <libgimp/gimp.h>
 #include <libgimp/gimpui.h>
 
 #include "ui/stxsavedialog.h"
-#include "ui/stxconfig.h"
-#include "dialog.h"
+#include "stxconfig.h"
 
 bool save_dialog(StxConfig &config) {
   auto dialog = stx_save_dialog_new(&config);

@@ -1,6 +1,6 @@
 #include <algorithm>
 
-#include "stx/bytes.h"
+#include "utils/bytes.h"
 #include "stx/structure.h"
 #include "stx/read.h"
 
@@ -20,7 +20,7 @@ stx::Result<stx::Image> stx::read(Glib::RefPtr<Gio::InputStream> file) {
 
     if (!std::equal(magic, magic + STX_MAGIC_SIZE - 1, STX_MAGIC))
       return ERR(stx::Error::WRONG_TYPE);
-  } catch (Glib::Error err) {
+  } catch (Glib::Error *err) {
     return ERR(stx::Error::EARLY_EOF);
   }
 
@@ -44,7 +44,7 @@ stx::Result<stx::Image> stx::read(Glib::RefPtr<Gio::InputStream> file) {
       } else if (opener == STX_DELIMITER) {
         break;
       }
-    } catch (Glib::Error err) {
+    } catch (Glib::Error *err) {
       return ERR(stx::Error::EARLY_EOF);
     }
   }
@@ -58,7 +58,7 @@ stx::Result<stx::Image> stx::read(Glib::RefPtr<Gio::InputStream> file) {
       STX_NUM_CHANNELS;
     data.image_data = new unsigned char[bytes];
     file->read(data.image_data, bytes);
-  } catch (Glib::Error err) {
+  } catch (Glib::Error *err) {
     if (data.image_data) {
       delete[] data.image_data;
     }

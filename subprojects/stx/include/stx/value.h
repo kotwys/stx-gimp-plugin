@@ -1,6 +1,9 @@
 #pragma once
 #include <neither/neither.hpp>
 
+#define ERR(v) Result::leftOf(v)
+#define OK(v) Result::rightOf(v)
+
 namespace stx {
   enum class Error {
     OPEN_FAILED,
@@ -9,9 +12,6 @@ namespace stx {
     GIMP_ERROR,
     WRITTING_ERROR
   };
-
-  #define ERR(v) Result::leftOf(v)
-  #define OK(v) Result::rightOf(v)
 
   #define UNWRAP_TO(either, target) \
   auto tmp = either; \

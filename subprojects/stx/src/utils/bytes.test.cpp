@@ -2,10 +2,10 @@
 #include <assert.h>
 #include <iostream>
 
-#include "bytes.h"
+#include "utils/bytes.h"
 
 int main() {
-  char test[2] = { '\x80', '\x00' };
+  unsigned char test[2] = { 128, 0 };
   uint16_t expected = 128;
 
   // Take zero byte

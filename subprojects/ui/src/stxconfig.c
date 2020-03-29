@@ -1,4 +1,4 @@
-#include "ui/stxconfig.h"
+#include "stxconfig.h"
 
 StxConfig stx_config_default() {
   StxConfig config;

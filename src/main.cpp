@@ -5,7 +5,7 @@
 
 #include "stx/read.h"
 #include "stx/write.h"
-#include "ui/stxconfig.h"
+#include "stxconfig.h"
 #include "dialog.h"
 #include "gimp_interop.h"
 
@@ -94,7 +94,7 @@ stx::Result<gint32> load_stx(const char *filename) {
       });
 
     return result;
-  } catch (Glib::Error err) {
+  } catch (Glib::Error *err) {
     return ERR(stx::Error::OPEN_FAILED);
   }
 }
@@ -116,7 +116,7 @@ stx::Result<std::monostate> save_stx(
       });
 
     return result;
-  } catch (Glib::Error err) {
+  } catch (Glib::Error *err) {
     return ERR(stx::Error::OPEN_FAILED);
   }
 }
