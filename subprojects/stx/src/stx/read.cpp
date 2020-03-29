@@ -1,15 +1,8 @@
 #include <algorithm>
 
-#include "utils/bytes.h"
 #include "stx/structure.h"
 #include "stx/read.h"
-
-static void parse_geometry(const unsigned char *buffer, stx::Geometry &geom) {
-  geom.scale_x = read_l16(buffer + 2);
-  geom.scale_y = read_l16(buffer + 6);
-  geom.width = read_l16(buffer + 15);
-  geom.height = read_l16(buffer + 23);
-}
+#include "stx/geom/pc_decoder.h"
 
 stx::Result<stx::Image> stx::read(Glib::RefPtr<Gio::InputStream> file) {
   using Result = stx::Result<stx::Image>;
@@ -41,9 +34,11 @@ stx::Result<stx::Image> stx::read(Glib::RefPtr<Gio::InputStream> file) {
         file->read(&geometry_type, 1);
         file->skip(2);
         if (geometry_type == STX_GEOM_PC) {
-          auto buffer = new unsigned char[STX_GEOM_SIZE];
-          file->read(buffer, STX_GEOM_SIZE);
-          parse_geometry(buffer, data.geometry);
+          stx::geom::PCGeomDecoder decoder;
+          size_t length = decoder.required_length();
+          auto buffer = new unsigned char[length];
+          file->read(buffer, length);
+          decoder.decode(buffer, data.geometry);
           delete[] buffer;
         } else {
           return ERR(stx::Error::WRONG_TYPE);

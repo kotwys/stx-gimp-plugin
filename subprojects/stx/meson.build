@@ -5,6 +5,7 @@ project('stx', 'cpp')
 sources = [
   'src/stx/read.cpp',
   'src/stx/write.cpp',
+  'src/stx/geom/pc_decoder.cpp',
   'src/utils/bytes.cpp',
 ]
 include = include_directories('include')
