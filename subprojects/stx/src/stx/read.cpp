@@ -2,7 +2,7 @@
 
 #include "stx/structure.h"
 #include "stx/read.h"
-#include "stx/geom/pc_decoder.h"
+#include "stx/geom/factory.h"
 
 stx::Result<stx::Image> stx::read(Glib::RefPtr<Gio::InputStream> file) {
   using Result = stx::Result<stx::Image>;
@@ -33,16 +33,16 @@ stx::Result<stx::Image> stx::read(Glib::RefPtr<Gio::InputStream> file) {
         unsigned char geometry_type;
         file->read(&geometry_type, 1);
         file->skip(2);
-        if (geometry_type == STX_GEOM_PC) {
-          stx::geom::PCGeomDecoder decoder;
-          size_t length = decoder.required_length();
-          auto buffer = new unsigned char[length];
-          file->read(buffer, length);
-          decoder.decode(buffer, data.geometry);
-          delete[] buffer;
-        } else {
+
+        auto decoder = stx::geom::get_decoder(geometry_type);
+        if (decoder == nullptr)
           return ERR(stx::Error::WRONG_TYPE);
-        }
+
+        size_t length = decoder->required_length();
+        auto buffer = new unsigned char[length];
+        file->read(buffer, length);
+        decoder->decode(buffer, data.geometry);
+        delete[] buffer;
       } else if (opener == STX_DELIMITER) {
         break;
       }
