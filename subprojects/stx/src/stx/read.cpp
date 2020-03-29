@@ -5,10 +5,10 @@
 #include "stx/read.h"
 
 static void parse_geometry(const unsigned char *buffer, stx::Geometry &geom) {
-  geom.scale_x = read_l16(buffer + 5);
-  geom.scale_y = read_l16(buffer + 9);
-  geom.width = read_l16(buffer + 18);
-  geom.height = read_l16(buffer + 26);
+  geom.scale_x = read_l16(buffer + 2);
+  geom.scale_y = read_l16(buffer + 6);
+  geom.width = read_l16(buffer + 15);
+  geom.height = read_l16(buffer + 23);
 }
 
 stx::Result<stx::Image> stx::read(Glib::RefPtr<Gio::InputStream> file) {
@@ -37,10 +37,17 @@ stx::Result<stx::Image> stx::read(Glib::RefPtr<Gio::InputStream> file) {
       } else if (opener == STX_E1_BEGIN) {
         file->skip(STX_E1_SIZE);
       } else if (opener == STX_GEOM_BEGIN) {
-        auto buffer = new unsigned char[STX_GEOM_SIZE];
-        file->read(buffer, STX_GEOM_SIZE);
-        parse_geometry(buffer, data.geometry);
-        delete[] buffer;
+        unsigned char geometry_type;
+        file->read(&geometry_type, 1);
+        file->skip(2);
+        if (geometry_type == STX_GEOM_PC) {
+          auto buffer = new unsigned char[STX_GEOM_SIZE];
+          file->read(buffer, STX_GEOM_SIZE);
+          parse_geometry(buffer, data.geometry);
+          delete[] buffer;
+        } else {
+          return ERR(stx::Error::WRONG_TYPE);
+        }
       } else if (opener == STX_DELIMITER) {
         break;
       }
