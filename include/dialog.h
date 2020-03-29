@@ -1,5 +1,5 @@
 #pragma once
-#include "ui/stxparams.h"
+#include "stxparams.h"
 
 #define DIALOG_ID "file-stx"
 

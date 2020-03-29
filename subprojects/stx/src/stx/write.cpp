@@ -1,4 +1,4 @@
-#include "stx/bytes.h"
+#include "utils/bytes.h"
 #include "stx/structure.h"
 #include "stx/write.h"
 
@@ -66,7 +66,7 @@ stx::Result<std::monostate> stx::write(
     delete[] img.image_data;
 
     file->write("\x00\x00", 2);
-  } catch (Glib::Error err) {
+  } catch (Glib::Error *err) {
     delete[] img.image_data;
     return ERR(stx::Error::WRITTING_ERROR);
   }

@@ -1,4 +1,4 @@
-#include "ui/stxparams.h"
+#include "stxparams.h"
 
 StxParams stx_params_default() {
   StxParams params;

@@ -1,8 +1,8 @@
-#include "stx/bytes.h"
+#include "utils/bytes.h"
 
 uint8_t read_l8(const unsigned char *ptr) {
   auto *uptr = reinterpret_cast<const uint8_t*>(ptr);
-  return *ptr;
+  return *uptr;
 }
 
 uint16_t read_l16(const unsigned char *ptr) {

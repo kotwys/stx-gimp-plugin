@@ -1,9 +1,8 @@
-#include <gtkmm.h>
+#include <gtk/gtk.h>
 #include <libgimp/gimp.h>
 #include <libgimp/gimpui.h>
 
 #include "ui/stxsavedialog.h"
-#include "ui/stxparams.h"
 #include "dialog.h"
 
 bool save_dialog(StxParams &params) {
