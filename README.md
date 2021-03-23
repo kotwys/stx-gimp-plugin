@@ -5,6 +5,23 @@ in Winx Club™ PC game (2006).
 
 ![Screenshot](assets/screenshot.png)
 
+## INSTALLATION
+
+In order to install the plugin you need download the prepared redistributables
+from [Releases page](https://github.com/kotwys/stx-gimp-plugin/releases) and
+put it in plugins folder of your GIMP installation. Usually it is
+
+- On Windows: `C:\Users\{your username}\Appdata\Roaming\GIMP\{gimp version}\plug-ins`
+- On macOS: `/Users/{your username}/Library/GIMP/{gimp version}/plug-ins`
+- On Linux: `/home/{your username}/.local/share/GIMP/{gimp version}/plug-ins`
+
+If not, you can look for appropriate folders in GIMP settings.
+
+The redistributables are prepared for Windows. If you're using macOS or Linux,
+you'll need to build the plugin yourself. Requirements are covered in [building
+section](#building).
+
+
 ## BUILDING
 
 > To build this plugin you need C++17-compatible compiler.
