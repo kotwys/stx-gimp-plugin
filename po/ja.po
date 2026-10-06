@@ -1,0 +1,89 @@
+# Japanese translation for file-stx
+# Copyright (C) 2026  kotwys
+# This file is distributed under the same license as the file-stx package.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: file-stx 1.0\n"
+"POT-Creation-Date: 2026-10-02 23:04+0400\n"
+"Language: ja\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Language: ja_JP\n"
+"X-Source-Language: en_US\n"
+
+#: file-stx/stx-export-dialog.c:82
+msgid ""
+"WARNING: A palette of at most 256 colors will be created for the texture "
+"which may result in some loss of quality."
+msgstr "警告: テクスチャは最大256色のパレットが作成されるので、ある程度の画質低下の可能性があります。"
+
+#: file-stx/stx-export.c:57
+msgid "Could not initialize quantization"
+msgstr "量子化の初期化に失敗しました"
+
+#: file-stx/stx-export.c:71
+msgid "Could not generate a palette"
+msgstr "パレットの生成に失敗しました"
+
+#: file-stx/stx-export.c:154
+msgid "Could not create an STX document"
+msgstr "STX ドキュメントの作成に失敗しました"
+
+#: file-stx/stx-export.c:163
+msgid "Could not write the STX document"
+msgstr "STX ドキュメントの保存に失敗しました"
+
+#: file-stx/stx-load.c:86
+#, c-format
+msgid "Error loading STX file: %s"
+msgstr "STX ファイルの読み込みエラー: %s"
+
+#: file-stx/stx.c:37
+msgid "PC (BGRA)"
+msgstr "PC (BGRA)"
+
+#: file-stx/stx.c:38
+msgid "PlayStation® 2 (indexed)"
+msgstr "PlayStation® 2 (インデックスカラー)"
+
+#: file-stx/stx.c:118
+msgid "Loads Sparkplug textures"
+msgstr "Sparkplug テクスチャを読み込む"
+
+#: file-stx/stx.c:119
+msgid ""
+"Loads files in the Sparkplug texture format. For PS2, the unswizzling code "
+"from ReverseBox is used."
+msgstr "Sparkplug テクスチャ形式のファイルを読み込みます。PS2 の場合、ReverseBox のスウィズル解除処理を使用します。"
+
+#: file-stx/stx.c:134
+msgid "Exports Sparkplug textures"
+msgstr "Sparkplug テクスチャをエクスポート"
+
+#: file-stx/stx.c:135
+msgid ""
+"Exports images as standalone Sparkplug texture files (STX). For PS2, uses "
+"libimagequant for color quantization and the swizzling code from ReverseBox."
+msgstr ""
+"画像を個別の Sparkplug テクスチャファイル (STX) としてエクスポートします。PS2 の場合、libimagequant "
+"による色の量子化と ReverseBox のスウィズル処理を使用します。"
+
+#: file-stx/stx.c:143
+msgid "STX"
+msgstr "STX"
+
+#: file-stx/stx.c:152
+msgid "Texture _kind"
+msgstr "テクスチャの種類(_K)"
+
+#: file-stx/stx.c:158
+msgid "Write optional _metadata"
+msgstr "追加のメタデータを書き込む(_M)"
+
+#: file-stx/stx.c:162
+msgid "Sparkplug texture"
+msgstr "Sparkplug テクスチャ"

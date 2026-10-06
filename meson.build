@@ -1,41 +1,45 @@
-project('stx-gimp-plugin', 'cpp')
-add_global_arguments('-std=c++17', language : 'cpp')
-# Support enum values combining
-add_project_arguments('-fpermissive', language : 'cpp')
+project('file-stx', 'c',
+        version : '1.0.0',
+        license : 'GPL-3.0-or-later',
+        meson_version : '>=0.60.0')
 
-# Sources
+plugin_name = 'file-stx'
 
-sources = [
-  'src/main.cpp',
-  'src/gimp_interop.cpp',
-  'src/dialog.cpp'
-]
-include = include_directories('include')
+splendente_prefix = get_option('splendente_prefix')
+if splendente_prefix == ''
+  error('-Dsplendente_prefix is not specified but is required.')
+endif
 
-# Dependencies
+# Splendente
 
-gimp_dep = dependency('gimp-2.0')
-gimpui_dep = dependency('gimpui-2.0')
-giomm_dep = dependency('giomm-2.4')
+cc       = meson.get_compiler('c')
+stx_dep  = declare_dependency(
+  dependencies : [cc.find_library('splendente-stx',
+                                  dirs : splendente_prefix / 'lib',
+                                  static : true)],
+  include_directories : [splendente_prefix / 'include'],
+)
 
-ui_proj = subproject('ui')
-ui_dep = ui_proj.get_variable('ui_dep')
+# System dependencies
 
-stx_proj = subproject('stx')
-stx_dep = stx_proj.get_variable('stx_dep')
+gimp_dep = dependency('gimp-3.0')
+gimpui_dep = dependency('gimpui-3.0')
+imagequant_dep = dependency('imagequant', static : true)
 
-neither_proj = subproject('neither')
-neither_dep = neither_proj.get_variable('neither_dep')
+sources = files(
+  'file-stx/babl-helper.c',
+  'file-stx/stx-export-dialog.c',
+  'file-stx/stx-export.c',
+  'file-stx/stx-load.c',
+  'file-stx/stx-settings.c',
+  'file-stx/stx.c',
+  'file-stx/swizzle.c',
+)
 
-# Outputs
+executable(plugin_name, sources,
+           dependencies : [gimp_dep, gimpui_dep, imagequant_dep, stx_dep],
+           win_subsystem : 'windows',
+           install : true,
+           install_dir : plugin_name)
 
-executable('file-stx', sources,
-  include_directories : include,
-  dependencies : [
-    gimp_dep,
-    gimpui_dep,
-    giomm_dep,
-    ui_dep,
-    stx_dep,
-    neither_dep
-  ])
+subdir('po')

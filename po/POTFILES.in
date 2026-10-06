@@ -1,0 +1,4 @@
+file-stx/stx-export-dialog.c
+file-stx/stx-export.c
+file-stx/stx-load.c
+file-stx/stx.c

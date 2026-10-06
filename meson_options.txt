@@ -1,0 +1,3 @@
+option('splendente_prefix',
+       type : 'string',
+       description : 'Path to the installation prefix of Splendente')
