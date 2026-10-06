@@ -30,7 +30,7 @@ As a result, you should have a folder named `file-stx` under `plug-ins`.
 ## Building from sources
 
 The project is built with the Meson build system. The core logic is implemented
-in the [Splendete STX library][splendente] which also requires Zig 0.16+. See
+in the [Splendente STX library][splendente] which also requires Zig 0.16+. See
 its building instructions to acquire `${SPLENDENTE_PREFIX}`.
 
 Also, the following libraries need to be available through `pkg-config` (refer
